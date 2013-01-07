@@ -2,7 +2,8 @@
 <body>
 <ul class=entries>
   {% for entry in entries %}
-  <li><h2>{{ entry.title }}</h2>{{ entry.text|safe }}
+  <li><h2>{{ entry.title }}</h2>@<b>{{entry.user}}</b>
+		{{ entry.text|safe }}
 		{% endfor %}
 </ul>
 </body>
