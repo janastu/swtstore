@@ -47,6 +47,10 @@ def page_not_found(e):
     return render_template('404.html'), 404
 
 
+@app.errohandler(500)
+def internal_error(e):
+    return render_template('500.html'), 500
+
 @app.route('/')
 def show_entries():
     res = g.collection.find().sort('_id',direction=-1)
@@ -84,12 +88,19 @@ def show_specific_entry(post_id):
         res = g.collection.find({'_id':ObjectId(post_id)});
         if(res.count() > 0):
             entries = make_list(res)
-            return render_template('show_posts.html', entries=entries)
+            return render_template('show_posts.html', entries=entries, str=str)
         else:
             abort(400)
     except InvalidId:
         abort(400)
 
+
+@app.route('/posts/delete/', methods=['POST'])
+def delete_post():
+    try:
+        g.collection.remove({'_id':ObjectId(request.form['post_id'])})
+    except:
+        abort(500)
 
 @app.route('/logout')
 def logout():
