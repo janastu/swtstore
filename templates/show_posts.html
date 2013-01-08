@@ -12,7 +12,7 @@
 <body>
 <ul class=entries>
   {% for entry in entries %}
-	<li><h2>{{ entry.title }}</h2>@<b>{{entry.user}}</b> <a href=""><img style="height:15px;" src="{{ url_for('static', filename='bin.png') }}" onclick=deletePost({{ entry.id|string|tojson|safe }});></img></a>
+	<li><h2>{{ entry.title }}</h2>@<b>{{entry.user}}</b> <a href=""><i class="icon-trash" onclick=deletePost({{ entry.id|string|tojson|safe }});></i></a>
 	<p>	{{ entry.text|safe }} </p>
 		{% endfor %}
 </ul>
