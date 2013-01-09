@@ -12,8 +12,9 @@ from pymongo import Connection
 from bson.objectid import ObjectId
 from bson.errors import InvalidId
 from flask import Flask, request, session, g, redirect, url_for, abort, \
-     render_template, flash, _app_ctx_stack
-
+     render_template, flash, _app_ctx_stack, make_response, jsonify
+from urllib import unquote_plus
+import json
 # configuration
 DATABASE = 'alipiBlog'
 COLLECTION_NAME = 'posts'
@@ -23,7 +24,7 @@ USERNAME = 'admin'
 PASSWORD = 'default'
 DB_PORT = 27017
 DB_HOST = 'localhost'
-
+URL = "http://localhost:5000"
 # create our little application :)
 app = Flask(__name__)
 app.config.from_object(__name__)
@@ -42,7 +43,7 @@ def close_db(exception):
     g.connection.disconnect()
 
 
-@app.errorhandler(400)
+@app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404
 
@@ -60,11 +61,17 @@ def show_entries():
 
 @app.route('/add', methods=['POST'])
 def add_entry():
-    if not session.get('logged_in'):
-        abort(401)
-    g.collection.insert({'user':request.form['user'],'title':request.form['title'], 'text':request.form['text']})
-    flash('New entry was successfully posted')
-    return redirect(url_for('show_entries'))
+    response = make_response()
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    data = {}
+    data_list = []
+    escaped_form_data = json.loads(unquote_plus(request.form['data']))
+    for i in escaped_form_data:
+        id = g.collection.insert({'user':i['user'],'title':i['title'], 'text':i['text'],'top':i['top'],'bottom':i['bottom'],'left':i['left'],'right':i['right']})
+        data['permalink'] = app.config['URL']+'/posts/'+str(ObjectId(id))
+        data_list.append(data)
+    response.data = json.dumps(data_list)
+    return response
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -90,9 +97,9 @@ def show_specific_entry(post_id):
             entries = make_list(res)
             return render_template('show_posts.html', entries=entries, str=str)
         else:
-            abort(400)
+            abort(404)
     except InvalidId:
-        abort(400)
+        abort(404)
 
 
 @app.route('/posts/delete/', methods=['POST'])
