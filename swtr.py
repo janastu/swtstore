@@ -67,7 +67,7 @@ def add_entry():
     data_list = []
     escaped_form_data = json.loads(unquote_plus(request.form['data']))
     for i in escaped_form_data:
-        id = g.collection.insert({'user':i['user'],'title':i['title'], 'text':i['text'],'top':i['top'],'bottom':i['bottom'],'left':i['left'],'right':i['right']})
+        id = g.collection.insert({'user':i['user'],'title':i['title'], 'text':i['text'],'top':i['top'],'bottom':i['bottom'],'left':i['left'],'right':i['right'],'url':i['url']}) #Change i['user'] to 'i'.
         data['permalink'] = app.config['URL']+'/posts/'+str(ObjectId(id))
         data_list.append(data)
     response.data = json.dumps(data_list)
