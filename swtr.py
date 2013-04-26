@@ -38,6 +38,7 @@ def init_db():
     g.collection = db[app.config["COLLECTION_NAME"]]
 
 
+
 @app.teardown_request
 def close_db(exception):
     g.connection.disconnect()
@@ -65,10 +66,10 @@ def add_entry():
     response.headers['Access-Control-Allow-Origin'] = '*'
     data = {}
     data_list = []
-    escaped_form_data = json.loads(unquote_plus(request.form['data']))
-    for i in escaped_form_data:
-        id = g.collection.insert({'user':i['user'],'title':i['title'], 'text':i['text'],'top':i['top'],'bottom':i['bottom'],'left':i['left'],'right':i['right'],'url':i['url']}) #Change i['user'] to 'i'.
+    for i in json.loads(request.form['data']):
+        id = g.collection.insert(i)
         data['permalink'] = app.config['URL']+'/posts/'+str(ObjectId(id))
+        data['id'] = str(ObjectId(id))
         data_list.append(data)
     response.data = json.dumps(data_list)
     return response
@@ -89,13 +90,31 @@ def login():
     return render_template('login.html', error=error)
 
 
+@app.route('/query/<post_id>',methods=['GET'])
+def return_database_entry(post_id):
+    try:
+        res = g.collection.find_one({'_id':ObjectId(post_id)})
+        if(res):
+            res['blog'] = url_for('show_specific_entry', post_id = str(res['_id']))
+            del(res['_id'])
+            return jsonify(res)
+            # entries = make_list(res)
+            # return render_template('show_posts.html', entries=res, str=str)
+        else:
+            abort(404)
+    except InvalidId:
+        abort(404)
+
+
+
 @app.route('/posts/<post_id>',methods=['GET'])
 def show_specific_entry(post_id):
     try:
-        res = g.collection.find({'_id':ObjectId(post_id)});
+        res = g.collection.find({'_id':ObjectId(post_id)})
+        print res
         if(res.count() > 0):
-            entries = make_list(res)
-            return render_template('show_posts.html', entries=entries, str=str)
+            #entries = make_list(res)
+            return render_template('show_posts.html', entries=res, str=str)
         else:
             abort(404)
     except InvalidId:
@@ -118,13 +137,13 @@ def logout():
 def make_list(res):
     entries = []
     for row in res:
-        d = dict()
+        d = row
         d['id'] = str(row['_id'])
-        d['text'] = row['text']
-        d["title"] = row["title"]
-        d["user"] = row["user"]
+        # d['text'] = row['text']
+        # d["title"] = row["title"]
+        # d["user"] = row["user"]
         entries.append(d)
     return entries
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True, port=5001)

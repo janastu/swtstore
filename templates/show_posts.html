@@ -12,8 +12,12 @@
 <body>
 <ul class=entries>
   {% for entry in entries %}
-	<li><h2>{{ entry.title }}</h2>@<b>{{entry.user}}</b> <a href=""><i class="icon-trash" onclick=deletePost({{ entry.id|string|tojson|safe }});></i></a>
-	<p>	{{ entry.text|safe }} </p>
-		{% endfor %}
+	<li><h2>{{ entry.title }}</h2>@<b>{{entry.author}}</b>
+	{% if entry.type == 1 %}
+	<p> re-narrate "{{ entry.about|safe }}{{ entry.xpath|safe }}" with "{{ entry.data|safe }}" at "{{ entry.location|safe }}" in "{{ entry.lang|safe }}"</p>
+	<a href=""><i class="icon-trash" onclick=deletePost({{ entry.id|string|tojson|safe }});></i></a>
+	{% endif %}
+	<!-- <p>	{{ entry.text|safe }} </p> -->
+	{% endfor %}
 </ul>
 </body>
