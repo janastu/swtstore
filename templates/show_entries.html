@@ -15,8 +15,8 @@
   {% endif %}
   <ul class=entries>
   {% for entry in entries %}
-    <li><a href={{ "/posts/"+entry.id }}><h2>{{ entry.title }}</h2></a>@<b>{{ entry.user }}</b>
-			{{ entry.text|safe }}
+    <li><a href={{ "/posts/"+entry.id }}><h2>{{ entry.title }}</h2></a>@<b>{{ entry.who }}</b>
+			{{ entry.what }} {{ entry.where }} {{ entry.how|safe }}
   {% else %}
     <li><em>Unbelievable.  No entries here so far</em>
   {% endfor %}

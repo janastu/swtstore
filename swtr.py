@@ -66,6 +66,7 @@ def add_entry():
     response.headers['Access-Control-Allow-Origin'] = '*'
     data = {}
     data_list = []
+    print request.form['data']
     for i in json.loads(request.form['data']):
         id = g.collection.insert(i)
         data['permalink'] = app.config['URL']+'/posts/'+str(ObjectId(id))
