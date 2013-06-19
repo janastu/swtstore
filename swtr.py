@@ -15,11 +15,12 @@ from flask import Flask, request, session, g, redirect, url_for, abort, \
      render_template, flash, _app_ctx_stack, make_response, jsonify
 from urllib import unquote_plus
 import json
+import conf
 # configuration
 DATABASE = 'alipiBlog'
 COLLECTION_NAME = 'posts'
 DEBUG = True
-SECRET_KEY = 'development key'
+SECRET_KEY = conf.SECRET_KEY
 USERNAME = 'admin'
 PASSWORD = 'default'
 DB_PORT = 27017
@@ -134,6 +135,29 @@ def logout():
     session.pop('logged_in', None)
     flash('You were logged out')
     return redirect(url_for('show_entries'))
+
+@app.route('/serveUser')
+def serveUser():
+    session['key'] = conf.SECRET_KEY
+    return render_template('user.html')
+
+
+@app.route('/user', methods=['POST', "GET"])
+def user():
+    if request.method == 'POST':
+        response = make_response()
+        db = g.connection[app.config['DATABASE']]
+        collection = db['sweet_users']
+        collection.insert({'user':request.form["user"],"key":request.form["key"]})
+        return response
+    elif request.method == 'GET':
+        db = g.connection[app.config['DATABASE']]
+        collection = db['sweet_users']
+        users = []
+        for user in collection.find():
+            users.append(user['user'])
+        return render_template("users.html", users=users)
+
 
 def make_list(res):
     entries = []

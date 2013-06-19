@@ -1,0 +1,62 @@
+<!doctype html>
+<head>
+<script src="{{ url_for('static', filename='sjcl.js') }}" type="text/javascript"></script>
+<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename='bootstrap.min.css') }}">
+<style type="text/css">
+      body {
+        padding-top: 40px;
+        padding-bottom: 40px;
+        background-color: #f5f5f5;
+      }
+
+      .form-signin {
+        max-width: 300px;
+        padding: 19px 29px 29px;
+        margin: 0 auto 20px;
+        background-color: #fff;
+        border: 1px solid #e5e5e5;
+        -webkit-border-radius: 5px;
+           -moz-border-radius: 5px;
+                border-radius: 5px;
+        -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+           -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+                box-shadow: 0 1px 2px rgba(0,0,0,.05);
+      }
+      .form-signin .form-signin-heading,
+      .form-signin .checkbox {
+        margin-bottom: 10px;
+      }
+      .form-signin input[type="text"],
+      .form-signin input[type="password"] {
+        font-size: 16px;
+        height: auto;
+        margin-bottom: 15px;
+        padding: 7px 9px;
+      }
+
+    </style>
+</head>
+{% block body %}
+  {% if session.logged_in %}
+<div class="container form-signin">
+  <h2 class="form-signin-heading">Please create a user and assign a key</h2>
+<input type=text id="user" name=user class="input-block-level" placeholder="Name">
+<input id="password" class="input-block-level" type=password size=30 name=title placeholder="Password">
+<button class="btn btn-large btn-primary" type=submit onclick="encryptAndSend();">Submit</button>
+</div>
+  {% endif %}
+<script type="text/javascript">
+function encryptAndSend()
+{
+key = {{ session.key| tojson| safe }}
+data = $('#password').val();
+var hash = sjcl.encrypt(key,data);
+$.post({{ url_for('user')| tojson| safe }}, {'user':$("#user").val(), "key":hash}, function(data){
+/*TODO: In the UI flash a "check mark", to indicate success.*/
+console.log("Success");
+});
+
+}
+</script>
+{% endblock %}
