@@ -1,6 +1,6 @@
 <!doctype html>
 <head>
-<script src="{{ url_for('static', filename='sjcl.js') }}" type="text/javascript"></script>
+<!-- <script src="{{ url_for('static', filename='sjcl.js') }}" type="text/javascript"></script> -->
 <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
 <link rel=stylesheet type=text/css href="{{ url_for('static', filename='bootstrap.min.css') }}">
 <style type="text/css">
@@ -51,8 +51,7 @@ function encryptAndSend()
 {
 key = {{ session.key| tojson| safe }}
 data = $('#password').val();
-var hash = sjcl.encrypt(key,data);
-$.post({{ url_for('user')| tojson| safe }}, {'user':$("#user").val(), "key":hash}, function(data){
+$.post({{ url_for('user')| tojson| safe }}, {'user':$("#user").val(), "key":data}, function(data){
 /*TODO: In the UI flash a "check mark", to indicate success.*/
 console.log("Success");
 });

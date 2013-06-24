@@ -25,7 +25,7 @@ USERNAME = 'admin'
 PASSWORD = 'default'
 DB_PORT = 27017
 DB_HOST = 'localhost'
-URL = "http://localhost:5000"
+URL = "http://localhost:5001"
 # create our little application :)
 app = Flask(__name__)
 app.config.from_object(__name__)
@@ -37,7 +37,6 @@ def init_db():
     g.connection = Connection(app.config['DB_HOST'], app.config['DB_PORT'])
     db = g.connection[app.config['DATABASE']]
     g.collection = db[app.config["COLLECTION_NAME"]]
-
 
 
 @app.teardown_request
@@ -138,9 +137,12 @@ def logout():
 
 @app.route('/serveUser')
 def serveUser():
-    session['key'] = conf.SECRET_KEY
-    return render_template('user.html')
-
+    if "logged_in" in session:
+        print session["logged_in"]
+        session['key'] = conf.SECRET_KEY
+        return render_template('user.html')
+    else:
+        return render_template('login.html', error=None)
 
 @app.route('/user', methods=['POST', "GET"])
 def user():
@@ -157,6 +159,25 @@ def user():
         for user in collection.find():
             users.append(user['user'])
         return render_template("users.html", users=users)
+
+
+@app.route('/authenticate', methods=['POST','GET'])
+def authenticate():
+    if request.method == "POST":
+        response = make_response()
+        db = g.connection[app.config['DATABASE']]
+        collection = db['sweet_users']
+        for i in collection.find():
+            if i['user'] == request.form['user'] and i['key'] == request.form['hash']:
+                response.status_code = 200
+                response.headers['Access-Control-Allow-Origin'] = '*'
+                return response
+            else:
+                response.status_code = 403
+                response.headers['Access-Control-Allow-Origin'] = '*'
+                return response
+    elif request.method == "GET":
+        return app.send_static_file("sweet-authenticate.js")
 
 
 def make_list(res):
