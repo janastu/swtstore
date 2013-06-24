@@ -53,6 +53,7 @@ key = {{ session.key| tojson| safe }}
 data = $('#password').val();
 $.post({{ url_for('user')| tojson| safe }}, {'user':$("#user").val(), "key":data}, function(data){
 /*TODO: In the UI flash a "check mark", to indicate success.*/
+$("button").addClass("btn-success");
 console.log("Success");
 });
 
