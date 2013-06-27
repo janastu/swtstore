@@ -31,6 +31,9 @@ app = Flask(__name__)
 app.config.from_object(__name__)
 app.config.from_envvar('FLASKR_SETTINGS', silent=True)
 
+# Jinja filters
+app.jinja_env.filters['len'] = len
+
 
 def validateSweet(payload):
     for i in payload:
