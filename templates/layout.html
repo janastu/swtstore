@@ -11,9 +11,11 @@
       <div class="page">
         <h1>SWeeT Store</h1>
         <div class=metanav>
+          <a href="{{ url_for('show_entries') }}"> Home </a> |
           {% if not session.logged_in %}
           <a href="{{ url_for('login') }}">Log In</a>
           {% else %}
+          <a href="{{ url_for('user') }}"> Users </a> |
           <a href="{{ url_for('serveUser') }}">Add User</a> |
           <a href="{{ url_for('logout') }}">Log Out</a>
           {% endif %}

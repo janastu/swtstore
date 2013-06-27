@@ -1,26 +1,14 @@
 {% extends "layout.html" %}
 {% block body %}
-  {% if session.logged_in %}
-    <form action="{{ url_for('add_entry') }}" method="POST" class="add-entry">
-      <dl>
-        <dt>Who:</dt>
-        <dd><input type="text" name="who"></dd>
-        <dt>What:</dt>
-        <dd><input type="text" size="30" name="what"></dd>
-        <dt>Where:</dt>
-        <dd><input type="text" size="30" name="where"></dd>
-        <dt>How:</dt>
-        <dd><textarea name="how" rows="6" cols="40"></textarea></dd>
-        <dd><input type="submit" value=" Share "></dd>
-      </dl>
-    </form>
-  {% endif %}
   <ul class="entries">
   {% if entries|len > 0 %}
     {% for entry in entries %}
       <li>
         @<b>{{ entry.who }}</b>
         <b>#{{ entry.what }}</b> /{{ entry.where }} {{ entry.how|safe }}
+        {% if entry.created|len > 0 %}
+          <span><small>created: {{entry.created }}</small></span>
+        {% endif %}
         <a class="pull-right" href={{ "/posts/" + entry.id }}>
           <i class="icon-share-alt"></i>
         </a>

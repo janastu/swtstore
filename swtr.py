@@ -37,11 +37,15 @@ app.jinja_env.filters['len'] = len
 
 def validateSweet(payload):
     for i in payload:
-        if len(i['who']) and len(i['what']) and len(i['where']) and len(i['how']):
-            pass
-        else:
+        try:
+            if len(i['who']) and len(i['what']) and len(i['where']) and\
+               len(i['how']) and len(i['created']):
+                pass
+            else:
+                return False
+        except KeyError:
             return False
-        return True
+    return True
 
 @app.before_request
 def init_db():
