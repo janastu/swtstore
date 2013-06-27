@@ -1,8 +1,8 @@
-<!doctype html>
+{% extends "layout.html" %}
 {% block body %}
 {% if session.logged_in %}
-{% for user in users %}
-<p>{{ user }}</p>
-{% endfor %}
+  {% for user in users %}
+    <p>{{ user }}</p>
+  {% endfor %}
 {% endif %}
 {% endblock %}

@@ -32,6 +32,14 @@ app.config.from_object(__name__)
 app.config.from_envvar('FLASKR_SETTINGS', silent=True)
 
 
+def validateSweet(payload):
+    for i in payload:
+        if len(i['who']) and len(i['what']) and len(i['where']) and len(i['how']):
+            pass
+        else:
+            return False
+        return True
+
 @app.before_request
 def init_db():
     g.connection = Connection(app.config['DB_HOST'], app.config['DB_PORT'])
@@ -66,13 +74,26 @@ def add_entry():
     response.headers['Access-Control-Allow-Origin'] = '*'
     data = {}
     data_list = []
-    print request.form['data']
-    for i in json.loads(request.form['data']):
+    try:
+        payload = json.loads(request.form['data'])
+    except:
+        payload = [{'who': request.form['who'], 'what': request.form['what'],
+               'where': request.form['where'], 'how': request.form['how']}]
+    valid = validateSweet(payload)
+    if not valid:
+        response.status_code = 400
+        response.data = "Bad or Malformed Request. Please check the validity\
+        of your request"
+        return response
+    print 'swt payload rcvd..'
+    print payload
+    for i in payload:
         id = g.collection.insert(i)
-        data['permalink'] = app.config['URL']+'/posts/'+str(ObjectId(id))
+        data['permalink'] = app.config['URL'] + '/posts/' + str(ObjectId(id))
         data['id'] = str(ObjectId(id))
         data_list.append(data)
     response.data = json.dumps(data_list)
+    print 'swt stored..'
     return response
 
 
@@ -112,10 +133,15 @@ def return_database_entry(post_id):
 def show_specific_entry(post_id):
     try:
         res = g.collection.find({'_id':ObjectId(post_id)})
-        print res
         if(res.count() > 0):
             #entries = make_list(res)
-            return render_template('show_posts.html', entries=res, str=str)
+            entries = []
+            for i in res:
+                _id = i['_id']
+                del(i['_id'])
+                i['id'] = _id
+                entries.append(i)
+            return render_template('show_posts.html', entries=entries, str=str)
         else:
             abort(404)
     except InvalidId:
@@ -126,6 +152,7 @@ def show_specific_entry(post_id):
 def delete_post():
     try:
         g.collection.remove({'_id':ObjectId(request.form['post_id'])})
+        return jsonify(status='ok')
     except:
         abort(500)
 

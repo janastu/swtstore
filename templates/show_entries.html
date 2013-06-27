@@ -1,24 +1,31 @@
 {% extends "layout.html" %}
 {% block body %}
   {% if session.logged_in %}
-    <form action="{{ url_for('add_entry') }}" method=post class=add-entry>
+    <form action="{{ url_for('add_entry') }}" method="POST" class="add-entry">
       <dl>
-				<dt>Name:
-				<dd><input type=text name=user>
-        <dt>Title:
-        <dd><input type=text size=30 name=title>
-        <dt>Text:
-        <dd><textarea name=text rows=5 cols=40></textarea>
-        <dd><input type=submit value=Share>
+        <dt>Who:</dt>
+        <dd><input type="text" name="who"></dd>
+        <dt>What:</dt>
+        <dd><input type="text" size="30" name="what"></dd>
+        <dt>Where:</dt>
+        <dd><input type="text" size="30" name="where"></dd>
+        <dt>How:</dt>
+        <dd><textarea name="how" rows="6" cols="40"></textarea></dd>
+        <dd><input type="submit" value=" Submit "></dd>
       </dl>
     </form>
   {% endif %}
   <ul class=entries>
   {% for entry in entries %}
-    <li><a href={{ "/posts/"+entry.id }}><h2>{{ entry.title }}</h2></a>@<b>{{ entry.who }}</b>
-			{{ entry.what }} {{ entry.where }} {{ entry.how|safe }}
+    <li>
+      @<b>{{ entry.who }}</b>
+      <b>#{{ entry.what }}</b> /{{ entry.where }} {{ entry.how|safe }}
+      <a class="pull-right" href={{ "/posts/"+entry.id }}>
+        <i class="icon-share-alt"></i>
+      </a>
+    </li>
   {% else %}
-    <li><em>Unbelievable.  No entries here so far</em>
+    <li><em>Unbelievable.  No entries here so far</em></li>
   {% endfor %}
   </ul>
 {% endblock %}
