@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% block body %}
-  <ul class="entries">
+  <ul class="entries unstyled">
   {% if entries|len > 0 %}
     {% for entry in entries %}
 	    {% if entry.who %}
@@ -8,7 +8,7 @@
         @<b>{{ entry.who }}</b>
         <b>#{{ entry.what }}</b> /{{ entry.where }} {{ entry.how|safe }}
         {% if entry.created|len > 0 %}
-          <span><small>created: {{entry.created }}</small></span>
+          <small>created: {{entry.created }} UTC</small>
         {% endif %}
         <a class="pull-right" href={{ "/posts/" + entry.id }}>
           <i class="icon-share-alt"></i>
