@@ -207,9 +207,10 @@ def authenticate():
                 response.headers['Access-Control-Allow-Origin'] = '*'
                 return response
             else:
-                response.status_code = 403
-                response.headers['Access-Control-Allow-Origin'] = '*'
-                return response
+                pass
+        response.status_code = 403
+        response.headers['Access-Control-Allow-Origin'] = '*'
+        return response
     elif request.method == "GET":
         return app.send_static_file("sweet-authenticate.js")
 
