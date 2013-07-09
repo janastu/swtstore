@@ -247,8 +247,11 @@ def make_list(res):
     for row in res:
         d = row
         d['id'] = str(row['_id'])
-        if d['who'] in getUsers():
-            d['registered'] = True
+        try:
+            if d['who'] in getUsers() || d['author'] in getUsers():
+                d['registered'] = True
+        except KeyError:
+            pass
         entries.append(d)
     return entries
 
