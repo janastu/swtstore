@@ -248,7 +248,7 @@ def make_list(res):
         d = row
         d['id'] = str(row['_id'])
         try:
-            if d['who'] in getUsers() || d['author'] in getUsers():
+            if d['who'] in getUsers() or d['author'] in getUsers():
                 d['registered'] = True
         except KeyError:
             pass
