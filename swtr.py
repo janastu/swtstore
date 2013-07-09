@@ -47,6 +47,14 @@ def validateSweet(payload):
             return False
     return True
 
+def getUsers():
+    db = g.connection[app.config['DATABASE']]
+    coll = db['sweet_users']
+    users = []
+    for i in coll.find():
+        users.append(i['user'])
+    return users
+
 @app.before_request
 def init_db():
     g.connection = Connection(app.config['DB_HOST'], app.config['DB_PORT'])
@@ -172,26 +180,45 @@ def logout():
 @app.route('/serveUser')
 def serveUser():
     if "logged_in" in session:
-        print session["logged_in"]
+        #print session["logged_in"]
         session['key'] = conf.SECRET_KEY
         return render_template('user.html')
     else:
         return render_template('login.html', error=None)
 
-@app.route('/user', methods=['POST', "GET"])
-def user():
+@app.route('/user/', methods=['POST', 'GET'])
+@app.route('/user/<user_id>', methods=['GET'])
+def user(user_id='all'):
     if request.method == 'POST':
         response = make_response()
         db = g.connection[app.config['DATABASE']]
         collection = db['sweet_users']
-        collection.insert({'user':request.form["user"],"key":request.form["key"]})
+
+        # check if user already exists
+        if request.form['user'] in getUsers():
+            #print 'user already exists!'
+            flash('User already exists!')
+            return redirect(url_for('serveUser'))
+
+        # else insert new user
+        collection.insert({'user': request.form['user'],
+                           'key': request.form['key']})
+        response.status_code = 200
+        response.data = 'User added.'
         return response
+
     elif request.method == 'GET':
         db = g.connection[app.config['DATABASE']]
         collection = db['sweet_users']
         users = []
-        for user in collection.find():
-            users.append(user['user'])
+        if user_id == 'all':
+            users = getUsers()
+        else:
+            user = collection.find_one({'user': user_id})
+            if user:
+                users.append(user['user'])
+            else:
+                abort(404)
         return render_template("users.html", users=users)
 
 
@@ -220,9 +247,8 @@ def make_list(res):
     for row in res:
         d = row
         d['id'] = str(row['_id'])
-        # d['text'] = row['text']
-        # d["title"] = row["title"]
-        # d["user"] = row["user"]
+        if d['who'] in getUsers():
+            d['registered'] = True
         entries.append(d)
     return entries
 

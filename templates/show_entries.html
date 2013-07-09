@@ -5,7 +5,14 @@
     {% for entry in entries %}
 	    {% if entry.who %}
       <li>
-        @<b>{{ entry.who }}</b>
+        {% if entry.registered %}
+        <b>
+          <a href="/user/{{ entry.who }}">@{{ entry.who }}</a>
+        </b>
+        {% else %}
+        <b>@{{ entry.who }}</b>
+        {% endif %}
+
         <b>#{{ entry.what }}</b> /{{ entry.where }} {{ entry.how|safe }}
         {% if entry.created|len > 0 %}
           <small>created: {{entry.created }} UTC</small>

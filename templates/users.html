@@ -4,5 +4,9 @@
   {% for user in users %}
     <p>{{ user }}</p>
   {% endfor %}
+{% elif users|len == 1 %}
+  <p> {{ users[0] }} </p>
+{% else %}
+  <p> You have to login as admin to view this page. </p>
 {% endif %}
 {% endblock %}

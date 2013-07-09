@@ -34,9 +34,11 @@
 {% if session.logged_in %}
 <div class="form-signin">
   <h2 class="form-signin-heading">Please create a user and assign a key</h2>
-  <input type=text id="user" name=user class="input-block-level" placeholder="Name">
-  <input id="password" class="input-block-level" type=password size=30 name=title placeholder="Password">
-  <button class="btn btn-large btn-primary" type=submit onclick="encryptAndSend();">Submit</button>
+  <form method="POST" action="/user/">
+    <input type="text" id="user" name="user" class="input-block-level" placeholder="Name">
+    <input id="password" class="input-block-level" type="password" size="30" name="key" placeholder="Password">
+    <input class="btn btn-large btn-primary" type="submit" value="Submit">
+  </form>
 </div>
 {% endif %}
 
