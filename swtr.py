@@ -191,7 +191,17 @@ def searchSweets():
         reponse.status_code = 400
         return response
 
-    res = g.collection.find(args)
+    params = {}
+
+    params['where'] = args.get('where')
+    if args.get('who'):
+        params['who'] = args.get('who')
+    if args.get('what'):
+        params['what'] = args.get('what')
+    if args.get('how'):
+        params['how'] = args.get('how')
+
+    res = g.collection.find(params)
 
     if res.count() < 1:
         response.status_code = 404
