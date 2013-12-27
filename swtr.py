@@ -16,6 +16,20 @@ from flask import Flask, request, session, g, redirect, url_for, abort, \
 from urllib import unquote_plus
 import json
 import conf
+
+# TODO:
+#    restify
+#    APIs as follows:
+#        GET /sweets/q -> query sweets
+#                         args: who, where, what, how
+#        GET /sweets/<id> -> get specific sweet
+#        POST /sweets -> post sweets (one or a batch of)
+#        OPTIONS /sweets - > CORS policy .. understand it better
+#   classes!
+#   sqlAlchemy
+#   Postgres
+
+# TODO: move this in a config file
 # configuration
 DATABASE = 'alipiBlog'
 COLLECTION_NAME = 'posts'
@@ -26,7 +40,9 @@ PASSWORD = 'default'
 DB_PORT = 27017
 DB_HOST = 'localhost'
 URL = "http://localhost:5001"
+
 # create our little application :)
+# ^ ... It's going to be big now :P
 app = Flask(__name__)
 app.config.from_object(__name__)
 app.config.from_envvar('FLASKR_SETTINGS', silent=True)
@@ -78,22 +94,48 @@ def internal_error(e):
 
 @app.route('/')
 def show_entries():
+    print 'request:'
+    print request.method
     res = g.collection.find().sort('_id',direction=-1)
     entries = make_list(res)
     return render_template('show_entries.html', entries=entries)
 
 
-@app.route('/add', methods=['POST'])
-def add_entry():
+# TODO: understand if we really need the OPTIONS
+@app.route('/sweets', methods=['POST', 'OPTIONS'])
+@app.route('/add', methods=['POST', 'OPTIONS'])
+def addSweets():
+    print request.method
+
+    if request.method == 'OPTIONS':
+        response = make_response()
+        response.status_code = 200
+        response.headers['Access-Control-Allow-Origin'] = '*'
+        response.headers['Access-Control-Max-Age'] = '20days'
+        response.headers['Access-Control-Allow-Headers'] = 'Origin,\
+                         X-Requested-With, Content-Type, Accept'
+        return response
+
     response = make_response()
     response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Access-Control-Allow-Headers'] = 'Origin,\
+                     X-Requested-With, Content-Type, Accept'
     data = {}
     data_list = []
+    # TODO: find a better way of handling reqeust sweets
     try:
         payload = json.loads(request.form['data'])
     except:
-        payload = [{'who': request.form['who'], 'what': request.form['what'],
-               'where': request.form['where'], 'how': request.form['how']}]
+        try:
+            payload = [{'who': request.form['who'], 'what': request.form['what'],
+                    'where': request.form['where'], 'how': request.form['how']}]
+        except:
+            try:
+                payload = request.json
+            except:
+                payload = json.loads(request.data)
+
+
     valid = validateSweet(payload)
     if not valid:
         response.status_code = 400
@@ -103,9 +145,12 @@ def add_entry():
     print 'swt payload rcvd..'
     print payload
     for i in payload:
+        data = i
         id = g.collection.insert(i)
         data['permalink'] = app.config['URL'] + '/posts/' + str(ObjectId(id))
         data['id'] = str(ObjectId(id))
+        del(data['_id'])
+        print 'data', data
         data_list.append(data)
     response.data = json.dumps(data_list)
     print 'swt stored..'
@@ -127,6 +172,43 @@ def login():
     return render_template('login.html', error=error)
 
 
+@app.route('/sweets/q', methods=['GET'])
+def searchSweets():
+    response = make_response()
+    response.status_code = 200
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Access-Control-Max-Age'] = '20days'
+    response.headers['Access-Control-Allow-Headers'] = 'Origin,\
+                      X-Requested-With, Content-Type, Accept'
+
+    args = request.args
+
+    if args is None:
+        reponse.status_code = 400
+        return response
+
+    if args['where'] is None:
+        reponse.status_code = 400
+        return response
+
+    res = g.collection.find(args)
+
+    if res.count() < 1:
+        response.status_code = 404
+        return response
+
+    swt_list = []
+    for swt in res:
+        _id = swt['_id']
+        del(swt['_id'])
+        swt['id'] = str(_id)
+        swt_list.append(swt)
+
+    response.data = json.dumps(swt_list)
+    return response
+
+
+@app.route('/sweets/<post_id>', methods=['GET'])
 @app.route('/query/<post_id>',methods=['GET'])
 def return_database_entry(post_id):
     try:
