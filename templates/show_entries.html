@@ -1,5 +1,8 @@
 {% extends "layout.html" %}
 {% block body %}
+  <div id="store-stats">
+    <span><b>Total Sweets:</b> {{ stats.total_sweets }}</span>
+  </div>
   <ul class="entries unstyled">
   {% if entries|len > 0 %}
     {% for entry in entries %}
@@ -13,9 +16,14 @@
         <b>@{{ entry.who }}</b>
         {% endif %}
 
-        <b>#{{ entry.what }}</b> /{{ entry.where }} {{ entry.how|safe }}
+        <b>#{{ entry.what }}</b>
+        <a href="{{ appURL_map[entry.what] + entry.where }}" target="tab">
+          {{ entry.where }}
+        </a>
+        <p></p>
+        <p> {{ entry.how|safe }} </p>
         {% if entry.created|len > 0 %}
-          <small>created: {{entry.created }} UTC</small>
+          <small><i> created: {{entry.created }} UTC </i></small>
         {% endif %}
         <a class="pull-right" href={{ "/posts/" + entry.id }}>
           <i class="icon-share-alt"></i>

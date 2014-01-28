@@ -16,6 +16,7 @@ from flask import Flask, request, session, g, redirect, url_for, abort, \
 from urllib import unquote_plus
 import json
 import conf
+import requests
 
 # TODO:
 #    restify
@@ -28,10 +29,12 @@ import conf
 #   classes!
 #   sqlAlchemy
 #   Postgres
+#   Persona, Auth in API endpoints
 
 # TODO: move this in a config file
 # configuration
-DATABASE = 'alipiBlog'
+
+DATABASE = 'sweets_production'
 COLLECTION_NAME = 'posts'
 DEBUG = True
 SECRET_KEY = conf.SECRET_KEY
@@ -39,7 +42,14 @@ USERNAME = 'admin'
 PASSWORD = 'default'
 DB_PORT = 27017
 DB_HOST = 'localhost'
-URL = "http://localhost:5001"
+URL = 'http://localhost:5001'
+MOZ_PERSONA_VERIFIER = 'https://verifier.login.persona.org/verify'
+MOZ_PERSONA_AUDIENCE = 'http://localhost:5000'
+
+appURL_map = {'img-anno': 'http://localhost:5000/?where=',
+              're-narration': 'http://y.a11y.in/web?foruri=',
+              'idh-mowl': 'http://app.swtr.us/?where=',
+              'testFromAPI': 'http://app.swtr.us/?where='}
 
 # create our little application :)
 # ^ ... It's going to be big now :P
@@ -63,6 +73,7 @@ def validateSweet(payload):
             return False
     return True
 
+
 def getUsers():
     db = g.connection[app.config['DATABASE']]
     coll = db['sweet_users']
@@ -71,11 +82,17 @@ def getUsers():
         users.append(i['user'])
     return users
 
+def gatherStats(coll):
+    stats = {}
+    stats['total_sweets'] = coll.count()
+    return stats
+
 @app.before_request
 def init_db():
     g.connection = Connection(app.config['DB_HOST'], app.config['DB_PORT'])
     db = g.connection[app.config['DATABASE']]
     g.collection = db[app.config["COLLECTION_NAME"]]
+    g.stats = gatherStats(g.collection)
 
 
 @app.teardown_request
@@ -94,11 +111,10 @@ def internal_error(e):
 
 @app.route('/')
 def show_entries():
-    print 'request:'
-    print request.method
-    res = g.collection.find().sort('_id',direction=-1)
+    res = g.collection.find().sort('_id',direction=-1).limit(100)
     entries = make_list(res)
-    return render_template('show_entries.html', entries=entries)
+    return render_template('show_entries.html', entries=entries,
+                           appURL_map=appURL_map, stats=g.stats)
 
 
 # TODO: understand if we really need the OPTIONS
@@ -110,18 +126,26 @@ def addSweets():
     if request.method == 'OPTIONS':
         response = make_response()
         response.status_code = 200
-        response.headers['Access-Control-Allow-Origin'] = '*'
+        response.headers['Access-Control-Allow-Origin'] =\
+        'http://localhost:5000'
         response.headers['Access-Control-Max-Age'] = '20days'
         response.headers['Access-Control-Allow-Headers'] = 'Origin,\
                          X-Requested-With, Content-Type, Accept'
         return response
 
     response = make_response()
-    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Access-Control-Allow-Origin'] = 'http://localhost:5000'
     response.headers['Access-Control-Allow-Headers'] = 'Origin,\
                      X-Requested-With, Content-Type, Accept'
     data = {}
     data_list = []
+
+    if 'email' in session:
+        print 'identifed user'
+        print session['email']
+    else:
+        print 'unidentified user'
+
     # TODO: find a better way of handling reqeust sweets
     try:
         payload = json.loads(request.form['data'])
@@ -176,7 +200,7 @@ def login():
 def searchSweets():
     response = make_response()
     response.status_code = 200
-    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Access-Control-Allow-Origin'] = 'http://localhost:5000'
     response.headers['Access-Control-Max-Age'] = '20days'
     response.headers['Access-Control-Allow-Headers'] = 'Origin,\
                       X-Requested-With, Content-Type, Accept'
@@ -187,13 +211,14 @@ def searchSweets():
         reponse.status_code = 400
         return response
 
-    if args['where'] is None:
-        reponse.status_code = 400
-        return response
+    #if args['where'] is None:
+    #    reponse.status_code = 400
+    #    return response
 
     params = {}
 
-    params['where'] = args.get('where')
+    if args.get('where'):
+        params['where'] = args.get('where')
     if args.get('who'):
         params['who'] = args.get('who')
     if args.get('what'):
@@ -201,6 +226,8 @@ def searchSweets():
     if args.get('how'):
         params['how'] = args.get('how')
 
+
+    print params
     res = g.collection.find(params)
 
     if res.count() < 1:
@@ -333,6 +360,53 @@ def authenticate():
     elif request.method == "GET":
         return app.send_static_file("sweet-authenticate.js")
 
+@app.route('/auth/login', methods=['POST'])
+def authLogin():
+    response = make_response()
+    response.headers['Access-Control-Allow-Origin'] = 'http://localhost:5000'
+    response.headers['Access-Control-Allow-Credentials'] = 'true'
+    response.headers['Access-Control-Max-Age'] = '20days'
+    response.headers['Access-Control-Allow-Headers'] = 'Origin,\
+                      X-Requested-With, Content-Type, Accept'
+
+    if 'assertion' not in request.form:
+        response.status_code = 400
+        return response
+
+    data = {'assertion': request.form['assertion'], 'audience':
+            MOZ_PERSONA_AUDIENCE}
+    resp = requests.post(MOZ_PERSONA_VERIFIER, data=data, verify=True)
+    print resp.status_code
+    print resp.json()
+
+    if resp.ok:
+        verified_data = json.loads(resp.content)
+        if verified_data['status'] == 'okay':
+            #session.update({'email': verified_data['email']})
+            session['email'] = verified_data['email']
+            response.status_code = 200
+            response.data = {'email': verified_data['email']}
+            return response
+
+    response.status_code = 500
+    return response
+
+@app.route('/auth/logout', methods=['POST'])
+def authLogout():
+    response = make_response()
+    response.headers['Access-Control-Allow-Origin'] = 'http://localhost:5000'
+    response.headers['Access-Control-Allow-Credentials'] = 'true'
+    response.headers['Access-Control-Max-Age'] = '20days'
+    response.headers['Access-Control-Allow-Headers'] = 'Origin,\
+                      X-Requested-With, Content-Type, Accept'
+
+    if 'email' in session:
+        print 'logging out '
+        print session['email']
+        session.pop('email')
+
+    response.status_code = 200
+    return response
 
 def make_list(res):
     entries = []
@@ -349,3 +423,5 @@ def make_list(res):
 
 if __name__ == '__main__':
     app.run(debug=True, port=5001)
+
+
