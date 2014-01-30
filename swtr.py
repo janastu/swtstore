@@ -187,15 +187,12 @@ def searchSweets():
         reponse.status_code = 400
         return response
 
-    if args['where'] is None:
-        reponse.status_code = 400
-        return response
-
     params = {}
 
-    params['where'] = args.get('where')
     if args.get('who'):
         params['who'] = args.get('who')
+    if args.get('where'):
+        params['where'] = args.get('where')
     if args.get('what'):
         params['what'] = args.get('what')
     if args.get('how'):
@@ -205,6 +202,7 @@ def searchSweets():
 
     if res.count() < 1:
         response.status_code = 404
+        response.data = 'Not Found'
         return response
 
     swt_list = []
