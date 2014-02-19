@@ -1,8 +1,6 @@
 # -*-  coding: utf-8 -*-
 """
     __init__.py
-    :copyright: (c) 2014 by Anon Ray.
-    :license: BSD, see LICENSE for details
 """
 
 from flask import Flask, request, jsonify, render_template, make_response, g
