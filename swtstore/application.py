@@ -1,0 +1,151 @@
+# -*-  coding: utf-8 -*-
+"""
+    __init__.py
+    :copyright: (c) 2014 by Anon Ray.
+    :license: BSD, see LICENSE for details
+"""
+
+from flask import Flask, request, jsonify, render_template, make_response, g
+import os
+
+from classes.database import db
+from config import DefaultConfig
+from classes import views
+
+#from classes import models
+
+__all__ = ['create_app', 'getDBInstance']
+
+DEFAULT_APP_NAME = __name__
+
+DEFAULT_MODULES = (
+    (views.frontend, ''),
+    (views.api, '/api')
+)
+
+
+def create_app(config=None, app_name=None, modules=None):
+
+    if app_name is None:
+        app_name = DEFAULT_APP_NAME
+
+    if modules is None:
+        modules = DEFAULT_MODULES
+
+    app = Flask(app_name)
+
+    configure_app(app, config)
+
+    configure_logging(app)
+    configure_errorhandlers(app)
+    configure_extensions(app)
+    #configure_beforehandlers(app)
+    configure_modules(app, modules)
+
+    return app
+
+
+def configure_app(app, config):
+
+    app.config.from_object(DefaultConfig())
+
+    if config is not None:
+        app.config.from_object(config)
+
+    app.config.from_envvar('APP_CONFIG', silent=True)
+
+
+def configure_modules(app, modules):
+    for module, url_prefix in modules:
+        app.register_module(module, url_prefix=url_prefix)
+
+
+def configure_extensions(app):
+
+    db.init_app(app)
+    db.app = app
+
+# return the current db instance
+# TODO: is this needed so much?
+def getDBInstance():
+    return db
+
+
+def configure_errorhandlers(app):
+
+    if app.testing:
+        return
+
+    # TODO: with all these request can we send back the respective HTTP status
+    # codes instead of 200?
+    @app.errorhandler(404)
+    def not_found(error):
+        response = make_response()
+        response.status_code = 404
+
+        if request.is_xhr:
+            response.data = jsonify(error=error)
+        else:
+            response.data = render_template('errors/404.html')
+
+        return response
+
+    @app.errorhandler(403)
+    def forbidden(error):
+        response = make_response()
+        response.status_code = 403
+
+        if request.is_xhr:
+            response.data = jsonify(error=error)
+        else:
+            response.data = render_template('errors/403.html')
+
+        return response
+
+    @app.errorhandler(401)
+    def unauthorized(error):
+        response = make_response()
+        response.status_code = 401
+
+        if request.is_xhr:
+            response.data = jsonify(error=error)
+        else:
+            response.data = render_template('errors/401.html')
+
+        return response
+
+    @app.errorhandler(400)
+    def bad_request(error):
+        response = make_response()
+        response.status_code = 400
+
+        # Check if we have any custom error messages
+        print 'g.error:'
+        print g.error
+        if g.error:
+            error = g.error
+
+        if request.is_xhr:
+            response.data = jsonify(error=error)
+        else:
+            response.data = render_template('errors/400.html', error=error)
+
+        return response
+
+    @app.errorhandler(500)
+    def server_error(error):
+        response = make_response()
+        response.status_code = 500
+
+        if request.is_xhr:
+            response.data = jsonify(error=error)
+        else:
+            response.data = render_template('errors/500.html')
+
+        return response
+
+
+def configure_logging(app):
+    #TODO: implement
+    pass
+

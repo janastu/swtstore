@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+
+{% block body %}
+  <div id="store-stats">
+  </div>
+  <ul class="entries unstyled">
+
+  {% if sweets|length > 0 %}
+
+    {% for sweet in sweets %}
+      <li>
+        <span class="who">
+          <a href="#"> @{{ sweet.who }} </a>
+        </span>
+        <span class="what">
+          #{{ sweet.context.name }}
+        </span>
+        <span class="where">
+          {{ sweet.where }}
+        </span>
+        <p></p>
+        <span class="how">
+          {{ sweet.how|escape|safe }}
+        </span>
+
+        <small><i>created: {{sweet.created }}</i></small>
+
+        <span class="pull-right permalink">
+          <a href="#">
+          <i class="icon-share-alt"></i>
+        </a>
+      </li>
+    {% endfor %}
+
+  {% else %}
+    <li><em>Unbelievable.  No entries here so far</em></li>
+  {% endif %}
+
+  </ul>
+{% endblock %}
+
