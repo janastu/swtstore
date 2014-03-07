@@ -5,9 +5,13 @@ from sqlalchemy.exc import IntegrityError
 from swtstore.classes.models import Context
 from swtstore.classes.models import Sweet
 from swtstore.classes.exceptions import AlreadyExistsError
+from swtstore.classes.utils import urlnorm # normalize URLs
+from swtstore.classes.utils.httputils import make_cross_origin_headers
 
 
 api = Module(__name__)
+
+
 
 # Get a specific sweet
 @api.route('/sweets/<int:id>', methods=['GET'])
@@ -23,11 +27,19 @@ def getSweetById(id):
     print sweet
     return jsonify(sweet.to_dict())
 
+
 # Post a sweet to the sweet store
 @api.route('/sweets', methods=['OPTIONS', 'POST'])
 def createSweet():
 
     response = make_response()
+
+    #TODO: check if response is coming from a registered client
+    response = make_cross_origin_headers(response)
+
+    if request.method == 'OPTIONS':
+        response.status_code = 200
+        return response
 
     if request.json:
         payload = request.json
@@ -49,7 +61,7 @@ def createSweet():
 
     #who = User.getUserByName(payload['who'])
 
-    what = Context.getContextByName(payload['what'])
+    what = Context.query.filter_by(name=payload['what']).first()
 
     if what is None:
         print 'Context doesn\'t exist'
@@ -78,10 +90,71 @@ def createSweet():
 # args: who, what, where
 @api.route('/sweets/q', methods=['GET'])
 def querySweets():
-    pass
+
+    args = request.args
+
+    # if no arguments are passed, its an invalid request
+    if args is None:
+        abort(400)
+
+    params = {}
+    if args.get('who'):
+        params['who'] = args.get('who')
+    if args.get('what'):
+        what = Context.query.filter_by(name=args.get('what')).first()
+        params['what'] = what
+    if args.get('where'):
+        params['where'] = urlnorm(args.get('where'))
+
+    # if none of the above parameters are present, its an invalid request
+    if len(params) == 0:
+        abort(400)
+
+    print 'recvd params'
+    print params
+
+    response = make_response()
+
+    sweets = Sweet.query.filter_by(**params).all()
+
+    if len(sweets) == 0:
+        abort(404)
+
+    swts = [i.to_dict() for i in sweets]
+
+    response.data = json.dumps(swts)
+    response.headers['Content-type'] = 'application/json'
+    return response
+
+
+# Get a specific context with its definition; based on name
+@api.route('/contexts/<name>', methods=['GET'])
+def getContextByName(name):
+
+    context = Context.query.filter_by(name=name).first()
+    if context is None:
+        abort(404)
+
+    print context
+    return jsonify(context.to_dict())
+
+# Get a specific context with its definition; based on id
+@api.route('/contexts/<int:id>', methods=['GET'])
+def getContextById(id):
+
+    context = Context.query.get(id)
+    if context is None:
+        abort(404)
+
+    print context
+    print context.created
+    print context.to_dict()
+    print jsonify(context.to_dict()).data
+    return jsonify(context.to_dict())
+
 
 # Create a new Sweet Context
-@api.route('/context', methods=['POST'])
+@api.route('/contexts', methods=['POST'])
 def createContext():
 
     response = make_response()

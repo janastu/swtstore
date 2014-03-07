@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+{% block body %}
+<h4> Register a new app with the <i>swt web</i> platform </h4>
+<p class="text-muted"> Please fill in the details below and click Register button </p>
+
+<form role="form" method="POST" action="{{ url_for('app.register') }}">
+  <div class="form-group">
+    <label for="name">Name </label>
+    <input type="text" class="form-control" name="name" id="name" placeholder="Name of the application">
+  </div>
+  <div class="form-group">
+    <label for="desc">Description</label>
+    <p class="help-block"> Brief description of your application. (Optional)</p>
+    <textarea class="form-control" rows="4" id="desc" name="desc">
+    </textarea>
+  </div>
+  <div class="form-group">
+    <label for="redirect_uris">Redirect URLs</label>
+    <p class="help-block">Your app URL where it should be redirected once the user is authorized.</p>
+    <input type="text" class="form-control" name="redirect_uris" id="redirect_uris" placeholder="redirect URLs">
+  </div>
+  <div class="form-group">
+    <label for="scopes">Scopes</label>
+    <input type="text" class="form-control" name="scopes" id="scopes" value="email">
+  </div>
+  <button type="submit" class="btn btn-primary">Register</button>
+</form>
+{% endblock %}

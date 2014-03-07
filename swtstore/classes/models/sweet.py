@@ -16,13 +16,11 @@ class Sweet(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
 
-    who = db.Column(db.String, nullable=False)
-
-    what = db.relationship('Context', backref=db.backref('sweets',
-                                                            order_by=id))
-
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    who = db.relationship('User')
 
     context_id = db.Column(db.Integer, db.ForeignKey('contexts.id'))
+    what = db.relationship('Context')
 
     where = db.Column(db.String, nullable=False)
 
@@ -40,7 +38,7 @@ class Sweet(db.Model):
 
 
     def __repr__(self):
-        print '[Sweet Object: <%s : @%s: #%s : %s>]' % (self.id, self.who,
+        return '[Sweet Object: <%s : @%s: #%s : %s>]' % (self.id, self.who,
                                                         self.what, self.where)
 
     def __str__(self):
@@ -49,14 +47,15 @@ class Sweet(db.Model):
 
     # return a dictionary of data members
     def to_dict(self):
+        print self.created
         return {
-            'id': str(self.id),
+            'id': self.id,
             'who': self.who,
-            'what': self.what,
-            'context': self.context.name,
+            'what': self.what.name,
+            'context_id': self.context_id,
             'where': self.where,
             'how': self.how,
-            'created': self.created
+            'created': self.created.isoformat()
         }
 
 

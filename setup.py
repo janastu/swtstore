@@ -19,7 +19,9 @@ from setuptools import setup
 requires = [
     'Flask',
     'Flask-SQLAlchemy',
-    'sqlalchemy'
+    'sqlalchemy',
+    'Flask-OAuthlib',
+    'requests'
 ]
 
 

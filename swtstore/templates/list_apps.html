@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+{% block body %}
+<div>
+  {% if apps|length > 0 %}
+    <ul>
+    {% for app in apps %}
+      <div class="well">
+        <div class="pull-right">
+          <span class="glyphicon glyphicon-trash"></span>
+        </div>
+        <div> {{ app.name }} </div>
+        <div> {{ app.description }} </div>
+        <div>APP ID: {{ app.id }} </div>
+        <div> APP Secret: {{ app.client_secret }} </div>
+      </div>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <em> You haven't registered any apps yet! </em>
+  {% endif %}
+</div>
+{% endblock %}

@@ -26,3 +26,6 @@ class DefaultConfig():
     # Configure your log paths
     DEBUG_LOG = 'logs/debug.log'
     ERROR_LOG = 'logs/error.log'
+
+    # The Mozilla Persona Verifier Host. Leave it as it is.
+    MOZ_PERSONA_VERIFIER = 'https://verifier.login.persona.org/verify'

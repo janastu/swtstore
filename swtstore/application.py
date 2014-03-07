@@ -9,6 +9,7 @@ import os
 from classes.database import db
 from config import DefaultConfig
 from classes import views
+#from something import oauth
 
 #from classes import models
 
@@ -18,7 +19,10 @@ DEFAULT_APP_NAME = __name__
 
 DEFAULT_MODULES = (
     (views.frontend, ''),
-    (views.api, '/api')
+    (views.api, '/api'),
+    (views.user, '/users'),
+    (views.context, '/contexts'),
+    (views.app, '/apps')
 )
 
 
@@ -59,9 +63,9 @@ def configure_modules(app, modules):
 
 
 def configure_extensions(app):
-
     db.init_app(app)
     db.app = app
+    #oauth.init_app(app)
 
 # return the current db instance
 # TODO: is this needed so much?
@@ -118,10 +122,10 @@ def configure_errorhandlers(app):
         response.status_code = 400
 
         # Check if we have any custom error messages
-        print 'g.error:'
-        print g.error
-        if g.error:
-            error = g.error
+        #if g.error:
+        #    print 'g.error:'
+        #    print g.error
+        #    error = g.error
 
         if request.is_xhr:
             response.data = jsonify(error=error)

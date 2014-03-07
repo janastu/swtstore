@@ -3,10 +3,10 @@
 {% block body %}
   <div id="store-stats">
   </div>
-  <ul class="entries unstyled">
 
   {% if sweets|length > 0 %}
 
+    <ul class="entries unstyled">
     {% for sweet in sweets %}
       <li>
         <span class="who">
@@ -27,15 +27,19 @@
 
         <span class="pull-right permalink">
           <a href="#">
-          <i class="icon-share-alt"></i>
+          <i class="glyphicon glyphicon-share"></i>
         </a>
       </li>
     {% endfor %}
+    </ul>
 
   {% else %}
-    <li><em>Unbelievable.  No entries here so far</em></li>
+  <div class="row">
+    <div class="col-md-5">
+      <h4><em>Unbelievable! No sweets yet!!</em></h4>
+    </div>
+  </div>
   {% endif %}
 
-  </ul>
 {% endblock %}
 
