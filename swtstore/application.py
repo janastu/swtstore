@@ -9,9 +9,8 @@ import os
 from classes.database import db
 from config import DefaultConfig
 from classes import views
-#from something import oauth
-
 #from classes import models
+from classes import oauth
 
 __all__ = ['create_app', 'getDBInstance']
 
@@ -22,7 +21,8 @@ DEFAULT_MODULES = (
     (views.api, '/api'),
     (views.user, '/users'),
     (views.context, '/contexts'),
-    (views.app, '/apps')
+    (views.app, '/apps'),
+    (views.Oauth, '/oauth')
 )
 
 
@@ -65,7 +65,7 @@ def configure_modules(app, modules):
 def configure_extensions(app):
     db.init_app(app)
     db.app = app
-    #oauth.init_app(app)
+    oauth.init_app(app)
 
 # return the current db instance
 # TODO: is this needed so much?

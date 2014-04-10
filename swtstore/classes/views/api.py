@@ -1,5 +1,5 @@
-from flask import Module, jsonify, request, make_response, abort, g
-import json
+from flask import Module, jsonify, request, make_response, abort, g, json
+#import json
 from sqlalchemy.exc import IntegrityError
 
 from swtstore.classes.models import Context
@@ -7,10 +7,10 @@ from swtstore.classes.models import Sweet
 from swtstore.classes.exceptions import AlreadyExistsError
 from swtstore.classes.utils import urlnorm # normalize URLs
 from swtstore.classes.utils.httputils import make_cross_origin_headers
+from swtstore.classes import oauth
 
 
 api = Module(__name__)
-
 
 
 # Get a specific sweet
@@ -30,12 +30,15 @@ def getSweetById(id):
 
 # Post a sweet to the sweet store
 @api.route('/sweets', methods=['OPTIONS', 'POST'])
-def createSweet():
+@oauth.require_oauth('email', 'sweet')
+def createSweet(oauth_request):
 
     response = make_response()
 
+    client = oauth_request.client
+
     #TODO: check if response is coming from a registered client
-    response = make_cross_origin_headers(response)
+    response = make_cross_origin_headers(response, client.host_url)
 
     if request.method == 'OPTIONS':
         response.status_code = 200
@@ -53,43 +56,62 @@ def createSweet():
     print 'new sweet payload recvd..'
     print payload
 
-    if 'who' not in payload and 'what' not in payload and 'where' not in\
-       payload and 'how' not in payload:
+    # the payload has to be a list; a list of swts
+    for each in payload:
+        if 'what' not in each and 'where' not in\
+           each and 'how' not in each:
 
-        print 'Invalid Request..'
-        abort(400)
+            print 'Invalid Request..'
+            abort(400)
 
-    #who = User.getUserByName(payload['who'])
+    # all ok. create swts from the list now
 
-    what = Context.query.filter_by(name=payload['what']).first()
+    swts = []
+    for each in payload:
 
-    if what is None:
-        print 'Context doesn\'t exist'
-        g.error = 'Context doesn\'t exist'
-        abort(400) # this context doesn't exist!
+        what = Context.query.filter_by(name=each['what']).first()
 
-    print 'SWEET DATA'
-    print '------------'
-    print payload['who']
-    print what
-    print payload['where']
-    print payload['how']
-    print '-------------'
+        if what is None:
+            print 'Context doesn\'t exist'
+            g.error = 'Context doesn\'t exist'
+            abort(400) # this context doesn't exist!
 
-    new_sweet = Sweet(payload['who'], what, payload['where'], payload['how'])
+        # Get the authenticated user from the oauth request object.
+        # Older swtr clients sending `who` in string will be ignored.
+        who = oauth_request.user
 
-    print new_sweet
-    new_sweet.persist()
+        print 'SWEET DATA'
+        print '------------'
+        print who
+        print what
+        print each['where']
+        print each['how']
+        print '-------------'
+
+        new_sweet = Sweet(who, what, each['where'], each['how'])
+
+        new_sweet.persist()
+        print new_sweet
+        swts.append(new_sweet.id)
 
     response.status_code = 200
+    response.data = json.dumps(swts)
     return response
-
 
 
 # The Sweet query API: /sweets/q?who=<>&what=<>&where=<>
 # args: who, what, where
-@api.route('/sweets/q', methods=['GET'])
-def querySweets():
+@api.route('/sweets/q', methods=['GET', 'OPTIONS'])
+@oauth.require_oauth('sweet')
+def querySweets(oauth_request):
+
+    response = make_response()
+    response = make_cross_origin_headers(response,
+                                         oauth_request.client.host_url)
+
+    if request.method == 'OPTIONS':
+        reponse.status_code = 200
+        return response
 
     args = request.args
 
@@ -113,11 +135,11 @@ def querySweets():
     print 'recvd params'
     print params
 
-    response = make_response()
 
     sweets = Sweet.query.filter_by(**params).all()
 
     if len(sweets) == 0:
+        print 'No sweets found to satisfy query..'
         abort(404)
 
     swts = [i.to_dict() for i in sweets]
@@ -154,6 +176,7 @@ def getContextById(id):
 
 
 # Create a new Sweet Context
+@oauth.require_oauth('email', 'context')
 @api.route('/contexts', methods=['POST'])
 def createContext():
 
@@ -190,5 +213,21 @@ def createContext():
     res = new_context.persist()
 
     response.status_code = 200
+    return response
+
+
+# Send back logged in user data
+@api.route('/users/me', methods=['GET', 'OPTIONS'])
+@oauth.require_oauth('email')
+def getCurrentUser(oauth_request):
+    response = make_response()
+    response = make_cross_origin_headers(response,
+                                         oauth_request.client.host_url)
+    response.status_code = 200
+
+    if request.method == 'OPTIONS':
+        return response
+
+    response.data = json.dumps(oauth_request.user.to_dict())
     return response
 

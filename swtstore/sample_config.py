@@ -29,3 +29,9 @@ class DefaultConfig():
 
     # The Mozilla Persona Verifier Host. Leave it as it is.
     MOZ_PERSONA_VERIFIER = 'https://verifier.login.persona.org/verify'
+
+    # The URL at which this app, swtstore, is deployed.
+    SWTSTORE_URL = 'http://demo.swtr.us'
+
+    # Bearer token expiry
+    OAUTH2_PROVIDER_TOKEN_EXPIRES_IN = 3600

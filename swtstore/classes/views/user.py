@@ -21,7 +21,7 @@ user = Module(__name__)
 def login():
 
     response = make_response()
-    response = make_cross_origin_headers(response)
+    #response = make_cross_origin_headers(response)
 
     if 'assertion' not in request.form:
         response.status_code = 400
@@ -29,7 +29,7 @@ def login():
 
     print request.remote_addr
     data = {'assertion': request.form['assertion'], 'audience':
-            'http://localhost:5001'}
+            config.SWTSTORE_URL}
 
     resp = requests.post(config.MOZ_PERSONA_VERIFIER, data=data, verify=True)
     print resp.status_code
@@ -64,7 +64,7 @@ def login():
 def logout():
 
     response = make_response()
-    response = make_cross_origin_headers(response)
+    #response = make_cross_origin_headers(response)
 
     if 'email' in session:
         print 'logging out '
@@ -89,4 +89,5 @@ def profile():
     current_user.update(username=username)
 
     return redirect(url_for('profile'))
+
 

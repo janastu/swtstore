@@ -29,15 +29,25 @@ class Client(db.Model):
 
     _is_private = db.Column(db.Boolean)
 
+    _host_url = db.Column(db.String(60))
+
     _redirect_uris = db.Column(db.Text)
     _default_scopes = db.Column(db.Text)
 
+
+    @property
+    def client_id(self):
+        return self.id
 
     @property
     def client_type(self):
         if self._is_private:
             return 'private'
         return 'public'
+
+    @property
+    def host_url(self):
+        return self._host_url
 
     @property
     def redirect_uris(self):
@@ -56,10 +66,10 @@ class Client(db.Model):
         return []
 
     def __repr__(self):
-        return '[Client: <%s> : <%s>]' % (self.id, self.name)
+        return '<Client: %s :: ID: %s>' % (self.name, self.id)
 
     def __str__(self):
-        return '[Client: <%s> : <%s>]' % (self.id, self.name)
+        return '<Client: %s :: ID: %s>' % (self.name, self.id)
 
 
     # create and persist the client to the database
@@ -114,6 +124,9 @@ class Token(db.Model):
     """
     The final token to be used by a client
     """
+
+    __tablename__ = 'tokens'
+
     id = db.Column(db.Integer, primary_key=True)
 
     client_id = db.Column(db.String(40), db.ForeignKey('clients.id'),
@@ -143,14 +156,18 @@ class Token(db.Model):
 
 @oauth.clientgetter
 def loadClient(client_id):
-    return Client.query.filter_by(id=client_id).first()
+    print '@oauth.clientgetter'
+    #return Client.query.filter_by(id=client_id).first()
+    return Client.query.get(client_id)
 
 @oauth.grantgetter
 def loadGrant(client_id, code):
+    print '@oauth.grantgetter'
     return Grant.query.filter_by(client_id=client_id, code=code).first()
 
 @oauth.grantsetter
 def saveGrant(client_id, code, request, *args, **kwargs):
+    print '@oauth.grantsetter'
     expires = datetime.utcnow() + timedelta(seconds=100)
     grant = Grant(
         client_id = client_id,
@@ -166,6 +183,7 @@ def saveGrant(client_id, code, request, *args, **kwargs):
 
 @oauth.tokengetter
 def loadToken(access_token=None, refresh_token=None):
+    print '@oauth.tokengetter'
     if access_token:
         return Token.query.filter_by(access_token=access_token).first()
     elif refresh_token:
@@ -173,11 +191,14 @@ def loadToken(access_token=None, refresh_token=None):
 
 @oauth.tokensetter
 def saveToken(token, request, *args, **kwargs):
+    print '@oauth.tokensetter'
+
     toks = Token.query.filter_by(client_id=request.client.id,
                                  user_id=request.user.id)
     # make sure that every client has only one token connected to a user
     for t in toks:
         db.session.delete(t)
+
     expires_in = token.pop('expires_in')
     expires = datetime.utcnow() + timedelta(seconds=expires_in)
 
@@ -185,12 +206,15 @@ def saveToken(token, request, *args, **kwargs):
         access_token = token['access_token'],
         refresh_token = token['refresh_token'],
         token_type = token['token_type'],
-        _scopes = token['scopes'],
+        _scopes = token['scope'],
         expires = expires,
         client_id = request.client.id,
-        user = request.user.id
+        user = request.user
     )
     db.session.add(tok)
     db.session.commit()
     return tok
 
+@oauth.usergetter
+def getUser():
+    return User.getCurrentUser()

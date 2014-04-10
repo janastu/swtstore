@@ -10,10 +10,12 @@
     {% for sweet in sweets %}
       <li>
         <span class="who">
-          <a href="#"> @{{ sweet.who }} </a>
+          <a href="#">
+            @{{ sweet.who.username }}
+          </a>
         </span>
         <span class="what">
-          #{{ sweet.what.name }}
+          <b> #{{ sweet.what.name }} </b>
         </span>
         <span class="where">
           {{ sweet.where }}

@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>SWeeT Store</title>
+    <title>SWT Store</title>
     <link rel=stylesheet type=text/css href="{{ url_for('.static', filename='css/bootstrap.min.css') }}">
     <link rel=stylesheet type=text/css href="{{ url_for('.static', filename='css/bootstrap-theme.min.css') }}">
     <link rel=stylesheet type=text/css href="{{ url_for('.static', filename='css/style.css') }}">
@@ -52,7 +52,7 @@
               </small></a>
               </li>
               <li class="divider"></li>
-              <li> <a href="#" id="logout">Logout</a> </li>
+              <li> <a href="#" id="logout"> Logout </a> </li>
             </ul>
           </li>
           {% endif %}
@@ -61,7 +61,7 @@
       </div>
       <div class="notif">
         {% for message in get_flashed_messages() %}
-          <div class="flash">{{ message }}</div>
+          <div class="alert alert-danger">{{ message }}</div>
         {% endfor %}
       </div>
       <div class="content">

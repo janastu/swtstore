@@ -11,7 +11,7 @@
 swtstore
 --------
 
-The sweet store for decentralized, semantic, social web tweets a.k.a SWeeTs!!
+The store for decentralized, semantic, social web tweets a.k.a SWeeTs!!
 
 """
 from setuptools import setup
@@ -30,8 +30,8 @@ setup(
     version='0.1 - alpha',
     url='https://git.pantoto.org/sweet-web',
     license='BSD',
-    author='Halwai',
-    author_email='rayanon@servelots.com',
+    author='swtstore authors',
+    author_email='rayanon004@gmail.com',
     description='Server-side store for decentralized, semantic, social, web\
                 tweets',
     long_description=__doc__,

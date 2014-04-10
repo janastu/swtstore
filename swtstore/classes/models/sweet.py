@@ -50,7 +50,8 @@ class Sweet(db.Model):
         print self.created
         return {
             'id': self.id,
-            'who': self.who,
+            'who': self.who.username,
+            'user_id': self.user_id,
             'what': self.what.name,
             'context_id': self.context_id,
             'where': self.where,
