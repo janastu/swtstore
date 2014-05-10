@@ -9,7 +9,7 @@ from flask import Module, jsonify, request, render_template, session,\
 
 # swtstore imports
 from swtstore.classes.models.um import User
-from swtstore.classes.models import Sweet, Context, Client
+from swtstore.classes.models import Sweet, Context, Client, AuthorizedClients
 
 from swtstore.classes.utils.httputils import makeCORSHeaders
 from swtstore.config import DefaultConfig
@@ -89,8 +89,9 @@ def profile():
         return redirect(url_for('frontend.index'))
 
     if request.method == 'GET':
-        return render_template('me.html', user=current_user)
+        return render_template('user/me.html', user=current_user)
 
+    # else POST request
     username = request.form.get('username')
 
     current_app.logger.debug('Updating username of %s to %s',
@@ -109,7 +110,7 @@ def mySweets():
         return redirect(url_for('frontend.index'))
 
     swts = Sweet.getByCreator(user)
-    return render_template('my_sweets.html', sweets=swts)
+    return render_template('user/sweets.html', sweets=swts)
 
 
 @user.route('/me/contexts', methods=['GET'])
@@ -120,7 +121,7 @@ def myContexts():
         return redirect(url_for('frontend.index'))
 
     contexts = Context.getByCreator(user.id)
-    return render_template('my_contexts.html', contexts=contexts)
+    return render_template('user/contexts.html', contexts=contexts)
 
 
 @user.route('/me/apps', methods=['GET'])
@@ -132,6 +133,26 @@ def myApps():
         return redirect(url_for('frontend.index'))
 
     apps = Client.getClientsByCreator(user.id)
-    return render_template('my_apps.html', apps=apps)
+    return render_template('user/apps.html', apps=apps)
 
+@user.route('/me/authorized_apps', methods=['GET', 'POST'])
+def authorizedApps():
+
+    user = User.getCurrentUser()
+    if user is None:
+        return redirect(url_for('frontend.index'))
+
+    if request.method == 'GET':
+        authorized_clients = AuthorizedClients.getByUser(user)
+        return render_template('user/authorized_apps.html',
+                                authorized_clients=authorized_clients)
+
+    # else POST request
+    client_id = request.form.get('revoke-id', '')
+    if client_id:
+        client = Client.query.get(client_id)
+        current_app.logger.info('user %s revoking access to %s', user, client)
+        AuthorizedClients.revoke(user=user, client=client)
+
+    return redirect(url_for('authorizedApps'))
 

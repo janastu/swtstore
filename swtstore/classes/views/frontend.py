@@ -19,7 +19,7 @@ def index():
 
     user = User.getCurrentUser()
 
-    return render_template('index.html', sweets=sweets)
+    return render_template('frontend/index.html', sweets=sweets)
 
 
 # Create a new sweet context

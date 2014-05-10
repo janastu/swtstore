@@ -17,7 +17,7 @@ def register():
         return redirect(url_for('frontend.index'))
 
     if request.method == 'GET':
-        return render_template('register_context.html')
+        return render_template('context/register.html')
 
     if request.method == 'POST':
       if not request.form.get('name') or not request.form.get('defn'):

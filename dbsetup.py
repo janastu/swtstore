@@ -20,7 +20,7 @@ db = getDBInstance()
 
 # Import all modules which represents a SQLAlchemy model;
 # they have corresponding tables that are needed to be created
-from swtstore.classes.models import Sweet, Context, Client
+from swtstore.classes.models import Sweet, Context, Client, AuthorizedClients
 from swtstore.classes.models.um import User, Group, Membership
 
 # Create them!

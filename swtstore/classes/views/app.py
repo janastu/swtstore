@@ -22,7 +22,7 @@ def register():
         return redirect(url_for('frontend.index'))
 
     if request.method == 'GET':
-        return render_template('register_app.html')
+        return render_template('app/register.html')
 
     elif request.method == 'POST':
         req_fields = ['name', 'host_url', 'redirect_uris', 'scopes']

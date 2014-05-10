@@ -219,3 +219,47 @@ def saveToken(token, request, *args, **kwargs):
 @oauth.usergetter
 def getUser():
     return User.getCurrentUser()
+
+
+
+# Authorized Clients
+class AuthorizedClients(db.Model):
+    """
+     The clients authorized by users
+    """
+
+    __tablename__ = 'authorized_clients'
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    client_id = db.Column(db.String(40), db.ForeignKey('clients.id'),
+                          nullable=False)
+    client = db.relationship('Client')
+
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    user = db.relationship('User')
+
+    def persist(self):
+        db.session.add(self)
+        db.session.commit()
+
+    @staticmethod
+    def revoke(**kwargs):
+        user = kwargs.get('user')
+        client = kwargs.get('client')
+        authorization = AuthorizedClients.query.filter_by(user_id=user.id,
+                                          client_id=client.client_id).first()
+        current_app.logger.debug('authorization to be revoked-- %s',
+                                 authorization)
+        db.session.delete(authorization)
+        db.session.commit()
+
+    @staticmethod
+    def getByUser(user):
+        authorized_clients = [row.client for row in \
+                AuthorizedClients.query.filter_by(user_id=user.id).all()]
+
+        current_app.logger.debug('authorized clients %s', authorized_clients)
+
+        return authorized_clients
+

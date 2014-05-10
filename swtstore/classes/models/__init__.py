@@ -1,3 +1,3 @@
 from context import Context
 from sweet import Sweet
-from client import Client
+from client import Client, AuthorizedClients

@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+{% block body %}
+
+{% if authorized_clients | length > 0 %}
+<h4> Your authorized apps </h4>
+
+<p class="text-muted">
+  You have given access to these apps to post sweets
+  to the swtstore on your behalf. You can revoke access to specific apps.
+</p>
+
+<form role="form" method="POST" action="{{ url_for('user.authorizedApps') }}">
+  <div class="form-group">
+    <ul>
+      {% for client in authorized_clients %}
+        <li class="authorized_apps">
+          <p class="form-control-static">
+            <b>{{ client.name }}</b>: {{ client.description }}
+            <button type="submit" name="revoke-id" value="{{ client.client_id }}"
+              class="btn btn-sm btn-primary pull-right">Revoke Access</button>
+          </p>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+</form>
+{% else %}
+<i> You have not authorized any apps to access swtstore yet.</i>
+{% endif %}
+
+{% endblock %}
+
+{% block scripts %}
+
+<script>
+</script>
+
+{% endblock %}
