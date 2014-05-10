@@ -1,0 +1,40 @@
+{% extends "layout.html" %}
+
+{% block scripts %}
+<script>
+  window.onload = function() {
+    navigator.id.watch({
+      loggedInUser: ss.loggedInUser(),
+      //when an user logs in
+      onlogin: function(assertion) {
+        //verify assertion and login the user
+        $.ajax({
+          type: 'POST',
+          url: ss.loginURL(),
+          data: {assertion: assertion},
+          success: function(data) {
+            console.log('successful login..', data);
+            window.location.reload();
+          },
+          error: function() {
+            navigator.id.logout();
+          }
+        });
+      },
+      onlogout: function() {
+        $.ajax({
+          type: 'POST',
+          url: ss.logoutURL(),
+          success: function() {
+            window.location.reload();
+            console.log('logged out');
+          },
+          error: function() {
+          }
+        });
+      }
+    });
+    navigator.id.request();
+  };
+</script>
+{% endblock %}
