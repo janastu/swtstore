@@ -18,14 +18,16 @@ class DefaultConfig():
     SQLALCHEMY_DATABASE_URI =\
             'dialect+driver://username:password@host:port/database'
 
+    # Log level for the application
+    LOG_LEVEL = 'ERROR'
+
     # sqlalchemy debug messages; turn to False in prdocution
     SQLALCHEMY_ECHO = True #False
 
     #DEFAULT_MAIL_SENDER = 'support@swtr.us'
 
     # Configure your log paths
-    DEBUG_LOG = 'logs/debug.log'
-    ERROR_LOG = 'logs/error.log'
+    LOG_FILE = 'logs/swtstore.log'
 
     # The Mozilla Persona Verifier Host. Leave it as it is.
     MOZ_PERSONA_VERIFIER = 'https://verifier.login.persona.org/verify'

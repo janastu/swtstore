@@ -6,6 +6,7 @@
 from flask import Flask, request, jsonify, render_template, make_response, g
 import os
 import logging
+from logging.handlers import RotatingFileHandler
 
 from classes.database import db
 from config import DefaultConfig
@@ -154,9 +155,11 @@ def configure_logging(app):
     formatter = logging.Formatter('%(asctime)s %(levelname)s: %(message)s '
                                   '[in %(pathname)s:%(lineno)d]')
 
-    # TODO: maybe we can use a RotatingFileHandler?
     # Also error can be sent out via email. So we can also have a SMTPHandler?
-    log_handler = logging.StreamHandler()
+    log_file = app.config['LOG_FILE']
+    max_size = 1024 * 1024 * 20 # Max Size for a log file: 20MB
+    log_handler = RotatingFileHandler(log_file, maxBytes=max_size,
+                                      backupCount=10)
 
     if app.config.has_key('LOG_LEVEL'):
         log_level = app.config['LOG_LEVEL'] or 'ERROR'
