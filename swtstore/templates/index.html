@@ -28,7 +28,7 @@
         <small><i>created: {{sweet.created }}</i></small>
 
         <span class="pull-right permalink">
-          <a href="#">
+          <a href="{{ url_for('sweet.showSweet', id=sweet.id) }}">
           <i class="glyphicon glyphicon-share"></i>
         </a>
       </li>

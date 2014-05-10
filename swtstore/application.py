@@ -5,6 +5,7 @@
 
 from flask import Flask, request, jsonify, render_template, make_response, g
 import os
+import logging
 
 from classes.database import db
 from config import DefaultConfig
@@ -21,6 +22,7 @@ DEFAULT_MODULES = (
     (views.api, '/api'),
     (views.user, '/users'),
     (views.context, '/contexts'),
+    (views.sweet, '/sweets'),
     (views.app, '/apps'),
     (views.Oauth, '/oauth')
 )
@@ -148,6 +150,21 @@ def configure_errorhandlers(app):
 
 
 def configure_logging(app):
-    #TODO: implement
-    pass
+
+    formatter = logging.Formatter('%(asctime)s %(levelname)s: %(message)s '
+                                  '[in %(pathname)s:%(lineno)d]')
+
+    # TODO: maybe we can use a RotatingFileHandler?
+    # Also error can be sent out via email. So we can also have a SMTPHandler?
+    log_handler = logging.StreamHandler()
+
+    if app.config.has_key('LOG_LEVEL'):
+        log_level = app.config['LOG_LEVEL'] or 'ERROR'
+    else:
+        log_level = 'ERROR'
+
+    log_handler.setLevel(log_level)
+    log_handler.setFormatter(formatter)
+
+    app.logger.addHandler(log_handler)
 

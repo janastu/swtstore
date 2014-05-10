@@ -1,7 +1,5 @@
-
 # -*- coding utf-8 -*-
 # classes/views/apps.py
-
 
 from flask import Module, jsonify, request, render_template, redirect,\
                   url_for, flash, abort
@@ -16,19 +14,6 @@ from swtstore.classes.utils import urlnorm
 
 app = Module(__name__)
 
-@app.route('/', methods=['GET'])
-# list apps owned by current user
-def list():
-    current_user = User.getCurrentUser()
-    if current_user is None:
-        return redirect(url_for('frontend.index'))
-
-    her_apps = Client.getClientsByCreator(current_user.id)
-    print 'her_apps'
-    print her_apps
-    return render_template('list_apps.html', apps=her_apps,
-                           user=current_user.to_dict())
-
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -36,10 +21,8 @@ def register():
     if current_user is None:
         return redirect(url_for('frontend.index'))
 
-    user = current_user.to_dict()
-
     if request.method == 'GET':
-        return render_template('register_app.html', user=user)
+        return render_template('register_app.html')
 
     elif request.method == 'POST':
         req_fields = ['name', 'host_url', 'redirect_uris', 'scopes']
@@ -60,5 +43,5 @@ def register():
         )
         new_app.persist()
 
-        return redirect(url_for('list'))
+        return redirect(url_for('user.myApps'))
 

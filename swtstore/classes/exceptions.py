@@ -6,3 +6,5 @@ from sqlalchemy.exc import DontWrapMixin
 class AlreadyExistsError(Exception, DontWrapMixin):
     pass
 
+class InvalidPayload(Exception, DontWrapMixin):
+    pass

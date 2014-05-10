@@ -17,11 +17,15 @@
           <li>
             <a href="{{ url_for('frontend.index') }}"> Home </a>
           </li>
-          {% if not user %}
+          {% if not session.email %}
           <li>
             <a id="login" href="#"> Login </a>
           </li>
           {% else %}
+          <!-- swts list -->
+          <li>
+            <a href="{{ url_for('user.mySweets') }}"> My Sweets </a>
+          </li>
           <!-- the cog menu -->
           <li class="dropdown user-menu">
             <a class="dropdown-toggle" data-toggle="dropdown" href="#">
@@ -29,10 +33,10 @@
             </a>
             <ul class="dropdown-menu" role="menu">
               <li> <a href="{{ url_for('app.register') }}">Register New App</a> </li>
-              <li> <a href="{{ url_for('app.list') }}">Registered Apps</a> </li>
+              <li> <a href="{{ url_for('user.myApps') }}">Registered Apps</a> </li>
               <li class="divider"></li>
               <li> <a href="{{ url_for('context.register') }}">Register New Context</a> </li>
-              <li> <a href="{{ url_for('context.list') }}">Registered Contexts</a> </li>
+              <li> <a href="{{ url_for('user.myContexts') }}">Registered Contexts</a> </li>
             </ul>
           </li>
           <!-- the user menu -->
@@ -44,11 +48,7 @@
             <ul class="dropdown-menu" role="menu">
               <li>
               <a href="{{ url_for('user.profile') }}"><small>
-                  {% if user.username %}
-                    {{ user.username }}
-                  {% else %}
-                    {{ user.email }}
-                  {% endif %}
+                  {{ session.email }}
               </small></a>
               </li>
               <li class="divider"></li>
@@ -85,15 +85,7 @@
       ss.loginURL = function() { return "{{ url_for('user.login') }}"; };
       ss.logoutURL = function() { return "{{ url_for('user.logout') }}"; };
       ss.loggedInUser = function() {
-        {% if not user %}
-          var user = '';
-        {% else %}
-          var user = "{{ user.email }}";
-        {% endif %}
-        if(user) {
-          return user;
-        }
-        return null;
+        return ("{{ session.email }}") ? "{{ session.email }}" : null;
       };
       window.onload = function() {
         ss.init();

@@ -3,3 +3,4 @@
     __init__.py
 """
 from urlnorm import urlnorm
+from httputils import makeCORSHeaders

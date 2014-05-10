@@ -3,6 +3,7 @@
 # class:: Client
 
 from datetime import datetime, timedelta
+from flask import current_app
 
 from swtstore.classes.database import db
 from swtstore.classes.models.um import User
@@ -156,18 +157,18 @@ class Token(db.Model):
 
 @oauth.clientgetter
 def loadClient(client_id):
-    print '@oauth.clientgetter'
+    current_app.logger.debug('@oauth.clientgetter')
     #return Client.query.filter_by(id=client_id).first()
     return Client.query.get(client_id)
 
 @oauth.grantgetter
 def loadGrant(client_id, code):
-    print '@oauth.grantgetter'
+    current_app.logger.debug('@oauth.grantgetter')
     return Grant.query.filter_by(client_id=client_id, code=code).first()
 
 @oauth.grantsetter
 def saveGrant(client_id, code, request, *args, **kwargs):
-    print '@oauth.grantsetter'
+    current_app.logger.debug('@oauth.grantsetter')
     expires = datetime.utcnow() + timedelta(seconds=100)
     grant = Grant(
         client_id = client_id,
@@ -183,7 +184,7 @@ def saveGrant(client_id, code, request, *args, **kwargs):
 
 @oauth.tokengetter
 def loadToken(access_token=None, refresh_token=None):
-    print '@oauth.tokengetter'
+    current_app.logger.debug('@oauth.tokengetter')
     if access_token:
         return Token.query.filter_by(access_token=access_token).first()
     elif refresh_token:
@@ -191,7 +192,7 @@ def loadToken(access_token=None, refresh_token=None):
 
 @oauth.tokensetter
 def saveToken(token, request, *args, **kwargs):
-    print '@oauth.tokensetter'
+    current_app.logger.debug('@oauth.tokensetter')
 
     toks = Token.query.filter_by(client_id=request.client.id,
                                  user_id=request.user.id)

@@ -58,7 +58,7 @@ class Context(db.Model):
 
     # return a context instance given a name
     @staticmethod
-    def getContextByName(name):
+    def getByName(name):
         return Context.query.filter_by(name=name).first()
 
     @staticmethod

@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+{% block body %}
+<div>
+  {% if apps|length > 0 %}
+    <ul>
+    {% for app in apps %}
+      <div class="well">
+        <div class="pull-right">
+          <span class="glyphicon glyphicon-trash"></span>
+        </div>
+        <div><h4> {{ app.name }} </h4></div>
+        <div><h5> {{ app.description }} </h5></div>
+        <div>APP ID: {{ app.id }} </div>
+        <div> APP Secret: {{ app.client_secret }} </div>
+        <div>Host URL: {{ app.host_url }} </div>
+        <div>Redirect URL: {{ app.redirect_uris|join(', ') }} </div>
+        <div>Scopes: {{ app.default_scopes|join(', ') }} </div>
+      </div>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <em> You haven't registered any apps yet! </em>
+  {% endif %}
+</div>
+{% endblock %}

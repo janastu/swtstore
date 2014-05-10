@@ -2,12 +2,15 @@
 # classes/sweet.py
 # class:: Sweet
 
+from flask import current_app
 from datetime import datetime
 
 from swtstore.classes.database import db
 # custom SQLAlchemy type JSONType
 from swtstore.classes.models.types import JSONType
 from swtstore.classes.utils import urlnorm # normalize URLs
+from swtstore.classes.models import Context
+from swtstore.classes.models.um import User
 
 class Sweet(db.Model):
     """ customary docstring """
@@ -30,7 +33,7 @@ class Sweet(db.Model):
 
 
     def __init__(self, who, what, where, how):
-        print 'initing sweet..'
+        current_app.logger.info('initing sweet..')
         self.who = who
         self.what = what
         self.where = urlnorm(where)
@@ -45,9 +48,76 @@ class Sweet(db.Model):
         return '[Sweet Object: <%s : @%s: #%s : %s>]' % (self.id, self.who,
                                                         self.what, self.where)
 
+    # Update the sweet - only 'how' and 'where' fields can be updated
+    def update(self, **kwargs):
+        if kwargs.get('how'):
+            self.how = kwargs.get('how')
+            self.persist()
+        if kwargs.get('where'):
+            self.where = kwargs.get('where')
+            self.persist()
+
+        return None
+
+
+    # create multiple sweets from a list of JSON
+    @staticmethod
+    def createSweets(who, payload):
+        # the payload has to be a list; a list of swts
+        for each in payload:
+            if 'what' not in each and 'where' not in\
+                each and 'how' not in each:
+
+                raise InvalidPayload('Invalid payload %s \n for creating\
+                                     mutiple sweets' % (each))
+                return None
+
+        # all ok. create swts from the list now
+        swts = []
+        for each in payload:
+
+            what = Context.getByName(each['what'])
+
+            if what is None:
+                current_app.logger.info('Context "%s" do not exist. Aborting',
+                                    what)
+                g.error = 'Context do not exist'
+                abort(400) # this context doesn't exist!
+
+            current_app.logger.debug('SWEET PAYLOAD\n---\n%s\n%s\n%s\n%s\n----',
+                                 who, what, each['where'], each['how'])
+
+            new_sweet = Sweet(who, what, each['where'], each['how'])
+
+            new_sweet.persist()
+            current_app.logger.debug('New Sweet %s', new_sweet)
+            swts.append(new_sweet)
+
+        return swts
+
+    # get Sweets for frontend
+    @staticmethod
+    def getFrontendSwts():
+        return Sweet.query.order_by(Sweet.created.desc()).all()
+
+    # get sweets all sweets authored by a particular user
+    @staticmethod
+    def getByCreator(user):
+        return Sweet.query.filter_by(who=user).\
+                order_by(Sweet.created.desc()).all()
+
+    # allow to query all sweets based on "who", "what" and "where" params
+    @staticmethod
+    def queryByAll(params):
+        if params.get('who'):
+            params['who'] = User.getByName(params['who'])
+        if params.get('what'):
+            params['what'] = Context.getByName(params['what'])
+
+        return Sweet.query.filter_by(**params).all()
+
     # return a dictionary of data members
     def to_dict(self):
-        print self.created
         return {
             'id': self.id,
             'who': self.who.username,
@@ -63,6 +133,7 @@ class Sweet(db.Model):
     # create and persist the sweet to the database
     def persist(self):
 
+        current_app.logger.debug('Commiting sweet %s to db', self)
         db.session.add(self)
         db.session.commit()
 

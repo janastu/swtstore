@@ -5,6 +5,7 @@
     this.attachLogout();
     this.initPersona();
     this.activeNav();
+    $('.edit-sweet').click(ss.editSweet);
   };
 
   ss.activeNav = function() {
@@ -68,6 +69,69 @@
         });
       }
     });
+  };
+
+  ss.editSweet = function(event) {
+    var target = $(event.currentTarget).attr('for');
+    var how = JSON.parse($(event.currentTarget).siblings('.how').html());
+    //console.log(how);
+    // update sweet function
+    function updateSweet(event) {
+      var changed = false;
+      for(var field in how) {
+        var data = $('#edit-sweet-modal .modal-body textarea[name="'+field+'"]').val();
+        var item = (typeof how[field] === 'object') ? JSON.stringify(how[field]) :
+          how[field];
+        if(data !== item) {
+          changed = true;
+          how[field] = data;
+          console.log('Updated '+ field + ' with data: ', data);
+        }
+      }
+      if(changed) {
+        $('#save-edited-sweet').text('Saving Changes');
+
+        $.ajax({
+          type: 'PUT',
+          url: 'http://localhost:5001/api/sweets/'+target,
+          contentType: 'application/json',
+          data: JSON.stringify(how),
+          success: function(data) {
+            console.log('Updated swt from the server ', data);
+            $('#save-edited-sweet').text('Save Changes');
+            $('#edit-sweet-modal').modal('hide');
+          },
+          error: function() {
+            $('#save-edited-sweet').text('Save Changes');
+          }
+        });
+      }
+      else {
+        return;
+      }
+    }
+    // prepare the edit view
+    $('#edit-sweet-modal .modal-body').html('');
+    for(var field in how) {
+      var item = (typeof how[field] === 'object') ? JSON.stringify(how[field]) :
+        how[field];
+
+      $('#edit-sweet-modal .modal-body').append('<div class="form-group"> <b>'+
+          field+'</b>');
+      /*$('<input>',
+          {name: field, value: item, class: 'form-control', type: 'text'}).
+        appendTo('#edit-sweet-modal .modal-body');*/
+      $('#edit-sweet-modal .modal-body').append('<textarea name="'+field+'" class="form-control">'+item+'</textarea>');
+
+      $('#edit-sweet-modal').append('</div>');
+    }
+    // launch the modal
+    $('#edit-sweet-modal').modal();
+
+    // attach event handlers
+    $('#save-edited-sweet').off('click');
+    $('#save-edited-sweet').on('click', updateSweet);
+
   };
 
 })(ss);
