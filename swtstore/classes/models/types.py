@@ -15,7 +15,7 @@ class JSONType(types.TypeDecorator):
     similarly, convert string to dict while loading from database
     """
 
-    impl = types.Unicode
+    impl = types.UnicodeText
 
     def process_bind_param(self, value, dialect):
         return json.dumps(value)

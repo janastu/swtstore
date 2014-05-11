@@ -25,7 +25,7 @@ class Sweet(db.Model):
     context_id = db.Column(db.Integer, db.ForeignKey('contexts.id'))
     what = db.relationship('Context')
 
-    where = db.Column(db.String, nullable=False)
+    where = db.Column(db.UnicodeText, nullable=False)
 
     how = db.Column(JSONType)
 
