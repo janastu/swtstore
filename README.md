@@ -49,8 +49,8 @@ Any third-party client side application can communicate with the swtstore
 using these APIs, provided they have a valid access token.
 
 
-Installing
-----------
+Pre-requisites
+--------------
 
 The swtstore application is written in Python and uses a relational database.
 
@@ -62,16 +62,34 @@ Most common RDBMS supported by SQLAlchemy are MySQL, Postgresql.
 For more information on supported databases see
 [here](http://docs.sqlalchemy.org/en/rel_0_9/dialects/index.html).
 
-___ Once you are sure you have Python and a relational database (like
-MySQL/Postgresql etc.) installed. You can go ahead and follow these steps:___
+Also, make sure you have [pip](https://pip.pypa.io/en/latest/) installed, as
+swtstore depends of few external python packages.
+
+**NOTE: Make sure you have the pre-requisites installed before following the
+installation steps.**
+
+
+Installing
+----------
 
 * Clone the repository from [https://git.pantoto.org/sweet-web/sweet-web-engine](https://git.pantoto.org/sweet-web/sweet-web-engine)
-  OR you can download the
-  code from the same link.
 
-* It is strongly recommended to do the installation inside a virtual environment. 
+  > $ git clone --recursive https://git.pantoto.org/sweet-web/sweet-web-engine.git
+
+  If you have already cloned the repo, and then reading this README, you have
+  to get the submodules. Run this from the top-level of this repo:
+
+  > $ git submodule init
+  > $ git submodule update
+
+
+* It is recommended to do the installation inside a python virtual
+  environment.
+  For deploying on a server, it depends on how you have setup your server
+  environment.
   If you think, you know what you are doing and don't need the virtual
-  environment, you can skip to the next step.  
+  environment, you can skip to the next step.
+
   Initialize a python virtual environment using `virtualenv` in the same directory
   where you cloned the repository in the above step. Now, activate the
   environment
@@ -82,16 +100,21 @@ MySQL/Postgresql etc.) installed. You can go ahead and follow these steps:___
 
 * Run the setup.py script to install  `` python setup.py install ``
 
-You're done installing swtstore. Now you need to configure it to run.
+
+You're done with the installation step.
+
+Now you need to configure swtstore to run it correctly.
 
 
 Configure swtstore
 ------------------
 
+* Make sure you have configured the user management module with correct values.
+
 * Copy the contents of ``sample_config.py`` inside the ``swtstore`` directory
   into ``config.py`` inside ``swtstore`` directory itself.
 
-  Assuming you are using a *-nix based system, and you are in the root directory
+  Assuming you are using a \*-nix based system, and you are in the root directory
   of the codebase,
 
   `` $ cp swtstore/sample_config.py swtstore/config.py``
