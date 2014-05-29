@@ -17,10 +17,10 @@ The store for decentralized, semantic, social web tweets a.k.a SWeeTs!!
 from setuptools import setup
 
 requires = [
-    'Flask',
-    'Flask-SQLAlchemy',
-    'sqlalchemy',
-    'Flask-OAuthlib',
+    'Flask==0.10.1',
+    'Flask-SQLAlchemy==1.0',
+    'sqlalchemy==0.9.4',
+    'Flask-OAuthlib==0.4.3',
     'requests'
 ]
 
