@@ -54,16 +54,24 @@ Pre-requisites
 
 The swtstore application is written in Python and uses a relational database.
 
-Hence, the dependencies of this application are Python and any relational database
-supported by SQLAlchemy.
+Hence, the dependencies of this application are:
 
-Most common RDBMS supported by SQLAlchemy are MySQL, Postgresql.
+  * Python 2.7. See [here](https://www.python.org/about/gettingstarted/)
+    for more details on installing Python.
 
-For more information on supported databases see
-[here](http://docs.sqlalchemy.org/en/rel_0_9/dialects/index.html).
+  * any relational database supported by SQLAlchemy. Most common RDBMS
+    supported by SQLAlchemy are MySQL, Postgresql.
 
-Also, make sure you have [pip](https://pip.pypa.io/en/latest/) installed, as
-swtstore depends of few external python packages.
+    For more information on supported databases see
+    [here](http://docs.sqlalchemy.org/en/rel_0_9/dialects/index.html).
+
+    _Installing and setting up a database like MySQL or Postgresql is out of scope
+    of this document. Please search the Internet to get help about installing and
+    setting up a RDBMS._
+
+  * Also, make sure you have [pip](https://pip.pypa.io/en/latest/) installed, as
+    swtstore depends of few external python packages.
+    See [here](https://pip.pypa.io/en/latest/) to get more details.
 
 **NOTE: Make sure you have the pre-requisites installed before following the
 installation steps.**
@@ -72,15 +80,16 @@ installation steps.**
 Installing
 ----------
 
-* Clone the repository from [https://git.pantoto.org/sweet-web/sweet-web-engine](https://git.pantoto.org/sweet-web/sweet-web-engine)
+* Clone the repository from <https://git.pantoto.org/sweet-web/sweet-web-engine>
 
-  > $ git clone --recursive https://git.pantoto.org/sweet-web/sweet-web-engine.git
+  > `` $ git clone --recursive https://git.pantoto.org/sweet-web/sweet-web-engine.git ``
 
   If you have already cloned the repo, and then reading this README, you have
   to get the submodules. Run this from the top-level of this repo:
 
-  > $ git submodule init
-  > $ git submodule update
+  > `` $ git submodule init ``
+
+  > `` $ git submodule update ``
 
 
 * It is recommended to do the installation inside a python virtual
@@ -117,14 +126,15 @@ Configure swtstore
   Assuming you are using a \*-nix based system, and you are in the root directory
   of the codebase,
 
-  `` $ cp swtstore/sample_config.py swtstore/config.py``
+  > `` $ cp swtstore/sample_config.py swtstore/config.py``
 
 * Edit the config.py file, and change the values accordingly.
 
 * Now, you have to setup the database for the swtstore application. But
   fortunately, the creation of database and tables have also been scripted, so
   all you need to do is run the ``dbsetup.py`` script.
-  `` $ python dbsetup.py ``
+
+  > `` $ python dbsetup.py ``
 
 **NOTE:** Please remember that all these configuration step is necessary and is
 required whether you are running the application locally or deploying it on a
