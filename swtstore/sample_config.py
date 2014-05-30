@@ -8,13 +8,18 @@ class DefaultConfig():
     """
 
     # You can turn debug to False in production
-    DEBUG = True # False
+    DEBUG = True  # False
 
     # Secret key needed by the Flask application to create sessions
     SECRET_KEY = '<generate a long, random, unique string and put it here. see\
                  python uuid>'
 
     # the sqlalchemy database URI
+    # postgresql+psycopg2://user:password@localhost:5432/test
+    # Creation of ``user`` user with access to ``test`` database should have
+    # been done prior to editing this line.
+    # Refer https://wiki.debian.org/PostgreSql#User_access for creating users
+    # in postgresql.
     SQLALCHEMY_DATABASE_URI =\
             'dialect+driver://username:password@host:port/database'
 
@@ -22,9 +27,9 @@ class DefaultConfig():
     LOG_LEVEL = 'ERROR'
 
     # sqlalchemy debug messages; turn to False in prdocution
-    SQLALCHEMY_ECHO = True #False
+    SQLALCHEMY_ECHO = True  # False
 
-    #DEFAULT_MAIL_SENDER = 'support@swtr.us'
+    # DEFAULT_MAIL_SENDER = 'support@swtr.us'
 
     # Configure your log paths
     LOG_FILE = 'logs/swtstore.log'
