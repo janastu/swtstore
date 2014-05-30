@@ -32,7 +32,7 @@ Sweet store provides the following APIs:
     - [GET] /api/sweets/q?who=<username>&what=<contextname>&where=<URL> :
       This API is for querying sweet based on the who, what and where
       parameters.
-      This API do not support querying based on parameters mentioned in how,
+      This API does not support querying based on parameters mentioned in how,
       but will be supported in future. Right now, the client can get sweets
       based on the above mentioned three parameters, and as the 'how' part is
       a JSON, it is trivial to do further filtering based on parameters of
@@ -54,7 +54,7 @@ Pre-requisites
 
 The swtstore application is written in Python and uses a relational database.
 
-Hence, the dependencies of this application is Python and any relational database
+Hence, the dependencies of this application are Python and any relational database
 supported by SQLAlchemy.
 
 Most common RDBMS supported by SQLAlchemy are MySQL, Postgresql.
@@ -127,7 +127,7 @@ Configure swtstore
   `` $ python dbsetup.py ``
 
 **NOTE:** Please remember that all these configuration step is necessary and is
-required wether you are running the application locally or deploying it on a
+required whether you are running the application locally or deploying it on a
 server.
 
 
@@ -157,7 +157,8 @@ script.
 See Apache WSGI configuration here:
 [http://modwsgi.readthedocs.org/en/latest/configuration-directives/WSGIScriptAlias.html](http://modwsgi.readthedocs.org/en/latest/configuration-directives/WSGIScriptAlias.html)
 
-TODO: [insert Nginx WSGI config link]
+See Nginx WSGI configuration here:
+[http://uwsgi-docs.readthedocs.org/en/latest/WSGIquickstart.html](http://uwsgi-docs.readthedocs.org/en/latest/WSGIquickstart.html)
 
 
 Help / Feedback
@@ -177,3 +178,17 @@ BSD Licensed.
 
 See LICENSE for more details.
 
+
+Known Issues
+------------
+
+* Infinite loop in Persona sign-in flow. When the backend API /users/login fail
+  to connect to the Mozilla Persona APIs (connection timed out etc.) - the
+  /users/login returns a 500, and then the Persona Javascript SDK calls the
+  logout API /users/logout and then it calls the login API again; as a result
+  the entire sign-in flow falls in a infinite loop.
+
+* Automatic log out from Persona. Persona forces a user to login, again, when he
+  opens SWeeT store while being logged into Persona, through a different
+  site. Persona requires the user, every time, to explicilty say that he is
+  agreeing to share the email adress with a site that is using Persona API.
