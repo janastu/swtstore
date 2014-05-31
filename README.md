@@ -128,6 +128,21 @@ Configure swtstore
 
   > `` $ cp swtstore/sample_config.py swtstore/config.py``
 
+* Install the required driver for using database mentioned in the
+  SQLALCHEMY_DATABASE_URI. Install pyscopg2 if you have chosen postgresql as
+  the database to use.
+
+  > `` $ pip install psycopg2 ``
+
+  Install oursql if you have chosen mysql as the database to use.
+
+  > `` $ pip install oursql``
+
+  You would also have to install dependecies, for using mysql:
+  - python-dev
+  - libmysqlclient-dev
+  Install these dependencies from the package manager of your distribution.
+
 * Edit the config.py file, and change the values accordingly.
 
 * Now, you have to setup the database for the swtstore application. But
