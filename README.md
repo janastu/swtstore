@@ -129,7 +129,7 @@ Configure swtstore
   > `` $ cp swtstore/sample_config.py swtstore/config.py``
 
 * Install the required driver for using database mentioned in the
-  SQLALCHEMY_DATABASE_URI. Install pyscopg2 if you have chosen postgresql as
+  SQLALCHEMY_DATABASE_URI. Install psycopg2 if you have chosen postgresql as
   the database to use.
 
   > `` $ pip install psycopg2 ``
