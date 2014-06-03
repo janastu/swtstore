@@ -3,7 +3,8 @@
 
 # Create and setup databases for the first time run of the application
 
-import sys, os
+import sys
+import os
 
 # Get the path to the base directory of the app
 BASE_DIR = os.path.join(os.path.dirname(__file__))
