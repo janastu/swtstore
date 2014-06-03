@@ -6,16 +6,16 @@
 
   {% if sweets|length > 0 %}
 
-    <ul class="entries unstyled">
+    <ul class="list-group">
     {% for sweet in sweets %}
-      <li>
+      <li class="list-group-item">
         <span class="who">
           <a href="#">
-            @{{ sweet.who.username }}
+            @{{ sweet.who }}
           </a>
         </span>
         <span class="what">
-          <b> #{{ sweet.what.name }} </b>
+          <b> #{{ sweet.what }} </b>
         </span>
         <span class="where">
           {{ sweet.where }}
@@ -25,7 +25,10 @@
           {{ sweet.how|escape|safe }}
         </span>
 
-        <small><i>created: {{sweet.created }}</i></small>
+        <p></p>
+        <span class="created">created:
+          <span>{{ sweet.created }}</span>
+        </span>
 
         <span class="pull-right permalink">
           <a href="{{ url_for('sweet.showSweet', id=sweet.id) }}">

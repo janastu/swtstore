@@ -60,8 +60,10 @@ class User(db.Model):
             'id': self.id,
             'username': self.username,
             'email': self.email,
-            'created': self.created.isoformat(),
-            'last_active': self.last_active.isoformat()
+            #'created': self.created.isoformat(),
+            'created': self.created.strftime('%a, %d %b %Y, %I:%M %p UTC'),
+            #'last_active': self.last_active.isoformat()
+            'last_active': self.last_active.strftime('%a, %d %b %Y, %I:%M %p UTC')
         }
 
     def __repr__(self):

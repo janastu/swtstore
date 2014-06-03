@@ -2,15 +2,15 @@
 
 {% block body %}
 
-<ul class="entries unstyled">
-  <li>
+<ul class="list-group">
+  <li class="list-group-item">
     <span class="who">
       <a href="#">
-        @{{ sweet.who.username }}
+        @{{ sweet.who }}
       </a>
     </span>
     <span class="what">
-      <b> #{{ sweet.what.name }} </b>
+      <b> #{{ sweet.what }} </b>
     </span>
     <span class="where">
       {{ sweet.where }}

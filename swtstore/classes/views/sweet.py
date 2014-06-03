@@ -21,7 +21,7 @@ def showSweet(id):
     sweet = Sweet.query.get(id)
     if sweet:
         print "sweet found " + str(sweet)
-        return render_template('sweet/specific.html', sweet=sweet)
+        return render_template('sweet/specific.html', sweet=sweet.to_dict())
     else:
         abort(404)
 

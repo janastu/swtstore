@@ -99,7 +99,7 @@ class Sweet(db.Model):
     def getFrontendSwts():
         return Sweet.query.order_by(Sweet.created.desc()).all()
 
-    # get sweets all sweets authored by a particular user
+    # get all sweets authored by a particular user
     @staticmethod
     def getByCreator(user):
         return Sweet.query.filter_by(who=user).\
@@ -125,7 +125,8 @@ class Sweet(db.Model):
             'context_id': self.context_id,
             'where': self.where,
             'how': self.how,
-            'created': self.created.isoformat()
+            #'created': self.created.isoformat()
+            'created': self.created.strftime('%a, %d %b %Y, %I:%M %p UTC'),
         }
 
 

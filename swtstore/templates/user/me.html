@@ -26,18 +26,15 @@
       </p>
     </div>
   </div>
+  <div class="form-group">
+    <label class="control-label">Last Active</label>
+    <div class="">
+      <p class="form-control-static" id="last-active">
+      {{ user.last_active }}
+      </p>
+    </div>
+  </div>
   <button type="submit" class="btn btn-primary">Update</button>
 </form>
-
-{% endblock %}
-
-{% block scripts %}
-
-<script>
-  var created = new Date("{{ user.created }}");
-  window.onload = function() {
-    $('#user-created').html(created.toString());
-  };
-</script>
 
 {% endblock %}

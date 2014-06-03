@@ -89,7 +89,7 @@ def profile():
         return redirect(url_for('frontend.index'))
 
     if request.method == 'GET':
-        return render_template('user/me.html', user=current_user)
+        return render_template('user/me.html', user=current_user.to_dict())
 
     # else POST request
     username = request.form.get('username')
@@ -110,6 +110,7 @@ def mySweets():
         return redirect(url_for('frontend.index'))
 
     swts = Sweet.getByCreator(user)
+    swts = [swt.to_dict() for swt in swts]
     return render_template('user/sweets.html', sweets=swts)
 
 
