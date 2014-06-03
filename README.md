@@ -84,14 +84,6 @@ Installing
 
   > `` $ git clone --recursive https://git.pantoto.org/sweet-web/sweet-web-engine.git ``
 
-  If you have already cloned the repo, and then reading this README, you have
-  to get the submodules. Run this from the top-level of this repo:
-
-  > `` $ git submodule init ``
-
-  > `` $ git submodule update ``
-
-
 * It is recommended to do the installation inside a python virtual
   environment.
   For deploying on a server, it depends on how you have setup your server
