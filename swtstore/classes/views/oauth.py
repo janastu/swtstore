@@ -6,8 +6,7 @@ from flask import Module, jsonify, request, render_template, redirect,\
 import requests
 
 from swtstore.classes import oauth
-from swtstore.classes.models.um import User
-from swtstore.classes.models import Client, AuthorizedClients
+from swtstore.classes.models import Client, AuthorizedClients, User
 
 
 Oauth = Module(__name__)

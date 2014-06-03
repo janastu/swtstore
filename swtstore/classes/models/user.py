@@ -3,11 +3,9 @@
 
 from datetime import datetime
 from flask import session
-
-#from .config import db
 from flask import current_app
-# TODO: remove dependency from config file
-db = current_app.db
+
+from swtstore.classes.database import db
 
 
 class User(db.Model):
@@ -30,7 +28,7 @@ class User(db.Model):
             self.username = kwargs.get('username')
         if kwargs.get('last_active'):
             current_app.logger.debug('Updated last_active timestamp %s for %s',
-                                     self, kwargs.get('last_active'))
+                                     kwargs.get('last_active'), self)
             self.last_active = kwargs.get('last_active')
 
         self.persist()

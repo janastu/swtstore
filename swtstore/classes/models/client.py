@@ -6,8 +6,9 @@ from datetime import datetime, timedelta
 from flask import current_app
 
 from swtstore.classes.database import db
-from swtstore.classes.models.um import User
+from swtstore.classes.models import User
 from swtstore.classes import oauth
+
 
 class Client(db.Model):
     """

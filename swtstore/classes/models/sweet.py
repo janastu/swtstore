@@ -9,8 +9,7 @@ from swtstore.classes.database import db
 # custom SQLAlchemy type JSONType
 from swtstore.classes.models.types import JSONType
 from swtstore.classes.utils import urlnorm # normalize URLs
-from swtstore.classes.models import Context
-from swtstore.classes.models.um import User
+from swtstore.classes.models import Context, User
 
 class Sweet(db.Model):
     """ customary docstring """

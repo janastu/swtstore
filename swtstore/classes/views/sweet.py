@@ -5,9 +5,7 @@
 from flask import Module, jsonify, request, render_template, redirect,\
                     url_for, abort, json
 
-from swtstore.classes.models import Context
-from swtstore.classes.models import Sweet
-from swtstore.classes.models.um import User
+from swtstore.classes.models import Context, Sweet, User
 
 
 sweet = Module(__name__)

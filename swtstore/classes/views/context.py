@@ -4,8 +4,7 @@
 from flask import Module, jsonify, request, render_template, redirect,\
                     url_for, json, current_app
 
-from swtstore.classes.models import Context
-from swtstore.classes.models.um import User
+from swtstore.classes.models import Context, User
 
 
 context = Module(__name__)

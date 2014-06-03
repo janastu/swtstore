@@ -7,8 +7,7 @@ from flask import Module, jsonify, request, render_template, redirect,\
 from hashlib import md5
 from werkzeug.security import gen_salt
 
-from swtstore.classes.models import Client
-from swtstore.classes.models.um import User
+from swtstore.classes.models import Client, User
 from swtstore.classes.utils import urlnorm
 
 

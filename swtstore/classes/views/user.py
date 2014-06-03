@@ -8,8 +8,8 @@ from flask import Module, jsonify, request, render_template, session,\
                 make_response, url_for, redirect, json, current_app
 
 # swtstore imports
-from swtstore.classes.models.um import User
-from swtstore.classes.models import Sweet, Context, Client, AuthorizedClients
+from swtstore.classes.models import User, Sweet, Context, Client,\
+                                    AuthorizedClients
 
 from swtstore.classes.utils.httputils import makeCORSHeaders
 from swtstore.config import DefaultConfig

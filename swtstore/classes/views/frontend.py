@@ -7,8 +7,7 @@ from flask import Module, jsonify, request, render_template, redirect,\
 
 from sqlalchemy import desc
 
-from swtstore.classes.models import Sweet
-from swtstore.classes.models.um import User
+from swtstore.classes.models import Sweet, User
 
 
 frontend = Module(__name__)

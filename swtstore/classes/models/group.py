@@ -6,7 +6,8 @@
 
 from datetime import datetime
 
-from .config import db
+from swtstore.classes.database import db
+
 
 class Group(db.Model):
     """
