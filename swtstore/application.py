@@ -156,8 +156,10 @@ def configure_logging(app):
                                   '[in %(pathname)s:%(lineno)d]')
 
     # Also error can be sent out via email. So we can also have a SMTPHandler?
-    log_file = app.config['LOG_FILE']
-    max_size = 1024 * 1024 * 20 # Max Size for a log file: 20MB
+    log_file = os.path.join(os.path.dirname(__file__), '..',
+                            app.config['LOG_FILE'])
+
+    max_size = 1024 * 1024 * 20  # Max Size for a log file: 20MB
     log_handler = RotatingFileHandler(log_file, maxBytes=max_size,
                                       backupCount=10)
 

@@ -10,7 +10,7 @@ from swtstore.classes.models import Context, Sweet, User
 
 sweet = Module(__name__)
 
-@sweet.route('/<id>', methods=['GET'])
+@sweet.route('/<int:id>', methods=['GET'])
 def showSweet(id):
     #current_user = User.getCurrentUser()
     #if current_user is None:
