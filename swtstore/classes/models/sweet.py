@@ -8,8 +8,10 @@ from datetime import datetime
 from swtstore.classes.database import db
 # custom SQLAlchemy type JSONType
 from swtstore.classes.models.types import JSONType
-from swtstore.classes.utils import urlnorm # normalize URLs
+from swtstore.classes.utils import urlnorm  # normalize URLs
 from swtstore.classes.models import Context, User
+from swtstore.classes.exceptions import InvalidPayload, ContextDoNotExist
+
 
 class Sweet(db.Model):
     """ customary docstring """
@@ -30,14 +32,12 @@ class Sweet(db.Model):
 
     created = db.Column(db.DateTime, default=datetime.utcnow)
 
-
     def __init__(self, who, what, where, how):
         current_app.logger.info('initing sweet..')
         self.who = who
         self.what = what
         self.where = urlnorm(where)
         self.how = how
-
 
     def __repr__(self):
         return '[Sweet Object: <%s : @%s: #%s : %s>]' % (self.id, self.who,
@@ -58,16 +58,15 @@ class Sweet(db.Model):
 
         return None
 
-
     # create multiple sweets from a list of JSON
     @staticmethod
     def createSweets(who, payload):
         # the payload has to be a list; a list of swts
         for each in payload:
-            if 'what' not in each and 'where' not in\
-                each and 'how' not in each:
+            if 'what' not in each and 'where' not in each and 'how' not in\
+                    each:
 
-                raise InvalidPayload('Invalid payload %s \n for creating\
+                raise InvalidPayload('Invalid payload %s \n while creating\
                                      mutiple sweets' % (each))
                 return None
 
@@ -78,13 +77,11 @@ class Sweet(db.Model):
             what = Context.getByName(each['what'])
 
             if what is None:
-                current_app.logger.info('Context "%s" do not exist. Aborting',
-                                    what)
-                g.error = 'Context do not exist'
-                abort(400) # this context doesn't exist!
+                raise ContextDoNotExist('Context %s do not exist!' %
+                                        (each['what']))
 
             current_app.logger.debug('SWEET PAYLOAD\n---\n%s\n%s\n%s\n%s\n----',
-                                 who, what, each['where'], each['how'])
+                                    who, what, each['where'], each['how'])
 
             new_sweet = Sweet(who, what, each['where'], each['how'])
 
@@ -129,12 +126,9 @@ class Sweet(db.Model):
             'created': self.created.strftime('%a, %d %b %Y, %I:%M %p UTC'),
         }
 
-
     # create and persist the sweet to the database
     def persist(self):
 
         current_app.logger.debug('Commiting sweet %s to db', self)
         db.session.add(self)
         db.session.commit()
-
-

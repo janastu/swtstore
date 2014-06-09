@@ -3,7 +3,8 @@
 
 # Script to run the application server in development mode
 
-import sys, os
+import sys
+import os
 
 # Get the path to the base directory of the app
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__)))

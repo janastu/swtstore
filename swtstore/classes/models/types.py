@@ -3,10 +3,10 @@
 # class:: Types
 # extend  SQLAlchemy Types
 
-from datetime import datetime
 import json
 
 from sqlalchemy import types
+
 
 class JSONType(types.TypeDecorator):
     """

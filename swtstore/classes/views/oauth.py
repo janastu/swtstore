@@ -1,9 +1,7 @@
 # -*- coding utf-8 -*-
 # classes/views/oauth.py
 
-from flask import Module, jsonify, request, render_template, redirect,\
-                    url_for, current_app
-import requests
+from flask import Module, jsonify, request, render_template, current_app
 
 from swtstore.classes import oauth
 from swtstore.classes.models import Client, AuthorizedClients, User
@@ -35,7 +33,6 @@ def authorize(*args, **kwargs):
         else:
             return render_template('oauth/authorize.html', **kwargs)
 
-
     confirm = request.form.get('confirm', 'no')
     authorized = request.form.get('authorized', 'no')
     current_app.logger.debug('confirm authorize from user: %s', confirm)
@@ -59,7 +56,7 @@ def access_token():
     current_app.logger.debug('access token touched..')
     return None
 
+
 @Oauth.route('/errors')
 def error():
     return jsonify(error=request.args.get('error'))
-

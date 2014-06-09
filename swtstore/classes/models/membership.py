@@ -35,4 +35,3 @@ class Membership(db.Model):
 
     def __repr__(self):
         return'<Membership %d>' % self.uid
-

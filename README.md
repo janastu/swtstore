@@ -82,7 +82,7 @@ Installing
 
 * Clone the repository from <https://git.pantoto.org/sweet-web/sweet-web-engine>
 
-  > `` $ git clone --recursive https://git.pantoto.org/sweet-web/sweet-web-engine.git ``
+  > `` $ git clone https://git.pantoto.org/sweet-web/sweet-web-engine.git ``
 
 * It is recommended to do the installation inside a python virtual
   environment.

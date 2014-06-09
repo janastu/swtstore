@@ -36,7 +36,6 @@ class Client(db.Model):
     _redirect_uris = db.Column(db.Text)
     _default_scopes = db.Column(db.Text)
 
-
     @property
     def client_id(self):
         return self.id
@@ -72,7 +71,6 @@ class Client(db.Model):
 
     def __str__(self):
         return '<Client: %s :: ID: %s>' % (self.name, self.id)
-
 
     # create and persist the client to the database
     def persist(self):
@@ -155,33 +153,35 @@ class Token(db.Model):
 #TODO: find out how to better structure the following code
 
 # OAuthLib decorators used by OAuthLib in the OAuth flow
-
 @oauth.clientgetter
 def loadClient(client_id):
     current_app.logger.debug('@oauth.clientgetter')
     #return Client.query.filter_by(id=client_id).first()
     return Client.query.get(client_id)
 
+
 @oauth.grantgetter
 def loadGrant(client_id, code):
     current_app.logger.debug('@oauth.grantgetter')
     return Grant.query.filter_by(client_id=client_id, code=code).first()
+
 
 @oauth.grantsetter
 def saveGrant(client_id, code, request, *args, **kwargs):
     current_app.logger.debug('@oauth.grantsetter')
     expires = datetime.utcnow() + timedelta(seconds=100)
     grant = Grant(
-        client_id = client_id,
-        code = code['code'],
-        redirect_uri = request.redirect_uri,
-        _scopes = ' '.join(request.scopes),
-        user = User.getCurrentUser(),
-        expires = expires
+        client_id=client_id,
+        code=code['code'],
+        redirect_uri=request.redirect_uri,
+        _scopes=' '.join(request.scopes),
+        user=User.getCurrentUser(),
+        expires=expires
     )
     db.session.add(grant)
     db.session.commit()
     return grant
+
 
 @oauth.tokengetter
 def loadToken(access_token=None, refresh_token=None):
@@ -190,6 +190,7 @@ def loadToken(access_token=None, refresh_token=None):
         return Token.query.filter_by(access_token=access_token).first()
     elif refresh_token:
         return Token.query.filter_by(refresh_token=refresh_token).first()
+
 
 @oauth.tokensetter
 def saveToken(token, request, *args, **kwargs):
@@ -205,22 +206,22 @@ def saveToken(token, request, *args, **kwargs):
     expires = datetime.utcnow() + timedelta(seconds=expires_in)
 
     tok = Token(
-        access_token = token['access_token'],
-        refresh_token = token['refresh_token'],
-        token_type = token['token_type'],
-        _scopes = token['scope'],
-        expires = expires,
-        client_id = request.client.id,
-        user = request.user
+        access_token=token['access_token'],
+        refresh_token=token['refresh_token'],
+        token_type=token['token_type'],
+        _scopes=token['scope'],
+        expires=expires,
+        client_id=request.client.id,
+        user=request.user
     )
     db.session.add(tok)
     db.session.commit()
     return tok
 
+
 @oauth.usergetter
 def getUser():
     return User.getCurrentUser()
-
 
 
 # Authorized Clients
@@ -257,10 +258,9 @@ class AuthorizedClients(db.Model):
 
     @staticmethod
     def getByUser(user):
-        authorized_clients = [row.client for row in \
+        authorized_clients = [row.client for row in
                 AuthorizedClients.query.filter_by(user_id=user.id).all()]
 
         current_app.logger.debug('authorized clients %s', authorized_clients)
 
         return authorized_clients
-

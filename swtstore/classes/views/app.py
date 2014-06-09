@@ -1,10 +1,9 @@
 # -*- coding utf-8 -*-
 # classes/views/apps.py
 
-from flask import Module, jsonify, request, render_template, redirect,\
-                  url_for, flash, abort
+from flask import Module, request, render_template, redirect,\
+    url_for, abort
 
-from hashlib import md5
 from werkzeug.security import gen_salt
 
 from swtstore.classes.models import Client, User
@@ -30,17 +29,16 @@ def register():
                 abort(404)
 
         new_app = Client(
-            id = gen_salt(40),
-            client_secret = gen_salt(50),
-            name = request.form.get('name'),
-            description = request.form.get('desc'),
-            user_id = current_user.id,
-            _host_url = request.form.get('host_url'),
-            _redirect_uris = urlnorm(request.form.get('redirect_uris')),
-            _default_scopes = ' '.join(request.form.get('scopes').split(',')),
-            _is_private = False
+            id=gen_salt(40),
+            client_secret=gen_salt(50),
+            name=request.form.get('name'),
+            description=request.form.get('desc'),
+            user_id=current_user.id,
+            _host_url=request.form.get('host_url'),
+            _redirect_uris=urlnorm(request.form.get('redirect_uris')),
+            _default_scopes=' '.join(request.form.get('scopes').split(',')),
+            _is_private=False
         )
         new_app.persist()
 
         return redirect(url_for('user.myApps'))
-

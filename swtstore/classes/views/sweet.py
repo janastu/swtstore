@@ -2,13 +2,13 @@
 # classes/views/sweet.py
 
 
-from flask import Module, jsonify, request, render_template, redirect,\
-                    url_for, abort, json
+from flask import Module, render_template, abort
 
-from swtstore.classes.models import Context, Sweet, User
+from swtstore.classes.models import Sweet
 
 
 sweet = Module(__name__)
+
 
 @sweet.route('/<int:id>', methods=['GET'])
 def showSweet(id):
@@ -24,5 +24,3 @@ def showSweet(id):
         return render_template('sweet/specific.html', sweet=sweet.to_dict())
     else:
         abort(404)
-
-

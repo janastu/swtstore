@@ -1,10 +1,10 @@
-from flask import Module, jsonify, request, make_response, abort, g, json,\
-                    current_app
+from flask import Module, jsonify, request, make_response
+from flask import abort, g, json, current_app
 
-from swtstore.classes.models import Context
-from swtstore.classes.models import Sweet
-from swtstore.classes.exceptions import AlreadyExistsError, InvalidPayload
-from swtstore.classes.utils import urlnorm # normalize URLs
+from swtstore.classes.models import Context, Sweet
+from swtstore.classes.exceptions import AlreadyExistsError, InvalidPayload,\
+    ContextDoNotExist
+from swtstore.classes.utils import urlnorm  # normalize URLs
 from swtstore.classes.utils.httputils import makeCORSHeaders
 from swtstore.classes import oauth
 
@@ -67,7 +67,7 @@ def createSweet(oauth_request):
     payload = request.json or request.data
     if not payload:
         current_app.logger.error('data not found in payload!')
-        g.error= 'data not found in payload!'
+        g.error = 'data not found in payload!'
         abort(400)
 
     current_app.logger.debug('new sweet payload recvd.. %s', payload)
@@ -78,8 +78,8 @@ def createSweet(oauth_request):
 
     try:
         swts = Sweet.createSweets(who, payload)
-    except InvalidPayload(msg):
-        current_app.logger.error('Invalid Payload in request')
+    except (InvalidPayload, ContextDoNotExist) as e:
+        current_app.logger.error('Error creating sweets. Error: %s', e)
         abort(400)
 
     response.status_code = 200
@@ -99,7 +99,7 @@ def querySweets():
     response = makeCORSHeaders(response, origin)
 
     if request.method == 'OPTIONS':
-        reponse.status_code = 200
+        response.status_code = 200
         return response
 
     args = request.args
@@ -145,6 +145,7 @@ def getContextByName(name):
 
     current_app.logger.debug('getContextByName : %s', context)
     return jsonify(context.to_dict())
+
 
 # Get a specific context with its definition; based on id
 @api.route('/contexts/<int:id>', methods=['GET'])
@@ -193,7 +194,7 @@ def createContext():
     current_app.logger.debug('new context created: %s', new_context)
 
     # all ok. save the new context
-    res = new_context.persist()
+    new_context.persist()
 
     response.status_code = 200
     return response
@@ -214,4 +215,3 @@ def getCurrentUser(oauth_request):
     # We have the user object along with the oauth request. Just return it back
     response.data = json.dumps(oauth_request.user.to_dict())
     return response
-

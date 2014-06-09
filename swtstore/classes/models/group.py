@@ -38,4 +38,3 @@ class Group(db.Model):
 
     def __repr__(self):
         return '<Group %r>' % self.name
-

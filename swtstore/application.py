@@ -3,10 +3,11 @@
     __init__.py
 """
 
-from flask import Flask, request, jsonify, render_template, make_response, g
 import os
 import logging
 from logging.handlers import RotatingFileHandler
+
+from flask import Flask, request, jsonify, render_template, make_response
 
 from classes.database import db
 from config import DefaultConfig
@@ -69,6 +70,7 @@ def configure_extensions(app):
     db.init_app(app)
     db.app = app
     oauth.init_app(app)
+
 
 # return the current db instance
 # TODO: is this needed so much?
@@ -163,7 +165,7 @@ def configure_logging(app):
     log_handler = RotatingFileHandler(log_file, maxBytes=max_size,
                                       backupCount=10)
 
-    if app.config.has_key('LOG_LEVEL'):
+    if 'LOG_LEVEL' in app.config:
         log_level = app.config['LOG_LEVEL'] or 'ERROR'
     else:
         log_level = 'ERROR'
@@ -172,4 +174,3 @@ def configure_logging(app):
     log_handler.setFormatter(formatter)
 
     app.logger.addHandler(log_handler)
-

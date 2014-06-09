@@ -4,20 +4,20 @@
 import requests
 
 # flask imports
-from flask import Module, jsonify, request, render_template, session,\
-                make_response, url_for, redirect, json, current_app
+from flask import Module, request, render_template, session,\
+    make_response, url_for, redirect, json, current_app
 
 # swtstore imports
 from swtstore.classes.models import User, Sweet, Context, Client,\
-                                    AuthorizedClients
+    AuthorizedClients
 
-from swtstore.classes.utils.httputils import makeCORSHeaders
 from swtstore.config import DefaultConfig
 
 
 config = DefaultConfig()
 
 user = Module(__name__)
+
 
 @user.route('/login', methods=['POST'])
 def login():
@@ -68,6 +68,7 @@ def login():
     response.status_code = 500
     return response
 
+
 @user.route('/logout', methods=['POST'])
 def logout():
 
@@ -80,6 +81,7 @@ def logout():
 
     response.status_code = 200
     return response
+
 
 @user.route('/me', methods=['GET', 'POST'])
 def profile():
@@ -136,6 +138,7 @@ def myApps():
     apps = Client.getClientsByCreator(user.id)
     return render_template('user/apps.html', apps=apps)
 
+
 @user.route('/me/authorized_apps', methods=['GET', 'POST'])
 def authorizedApps():
 
@@ -146,7 +149,7 @@ def authorizedApps():
     if request.method == 'GET':
         authorized_clients = AuthorizedClients.getByUser(user)
         return render_template('user/authorized_apps.html',
-                                authorized_clients=authorized_clients)
+                        authorized_clients=authorized_clients)
 
     # else POST request
     client_id = request.form.get('revoke-id', '')
@@ -156,4 +159,3 @@ def authorizedApps():
         AuthorizedClients.revoke(user=user, client=client)
 
     return redirect(url_for('authorizedApps'))
-

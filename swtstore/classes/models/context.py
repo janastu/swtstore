@@ -5,6 +5,8 @@
 from datetime import datetime
 import json
 
+from sqlalchemy.exc import IntegrityError
+
 from swtstore.classes import db
 from swtstore.classes.models.types import JSONType
 from swtstore.classes.exceptions import AlreadyExistsError
@@ -64,4 +66,3 @@ class Context(db.Model):
     @staticmethod
     def getByCreator(id):
         return [each.to_dict() for each in Context.query.filter_by(user_id=id)]
-

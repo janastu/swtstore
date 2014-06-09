@@ -1,4 +1,5 @@
 
+
 class DefaultConfig():
 
     """
@@ -20,8 +21,7 @@ class DefaultConfig():
     # been done prior to editing this line.
     # Refer https://wiki.debian.org/PostgreSql#User_access for creating users
     # in postgresql.
-    SQLALCHEMY_DATABASE_URI =\
-            'dialect+driver://username:password@host:port/database'
+    SQLALCHEMY_DATABASE_URI = 'dialect+driver://username:password@host:port/database'
 
     # Log level for the application
     LOG_LEVEL = 'ERROR'
