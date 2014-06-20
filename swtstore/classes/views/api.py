@@ -71,7 +71,10 @@ def createSweet(oauth_request):
         abort(400)
 
     current_app.logger.debug('new sweet payload recvd.. %s', payload)
+    if type(payload) is str:
+        payload = json.loads(payload)
 
+    current_app.logger.debug('type of payload %s', type(payload))
     # Get the authenticated user from the oauth request object.
     # Older swtr clients sending `who` in string will be ignored.
     who = oauth_request.user
@@ -80,6 +83,7 @@ def createSweet(oauth_request):
         swts = Sweet.createSweets(who, payload)
     except (InvalidPayload, ContextDoNotExist) as e:
         current_app.logger.error('Error creating sweets. Error: %s', e)
+        current_app.logger.error('Error %s', who)
         abort(400)
 
     response.status_code = 200
