@@ -109,6 +109,8 @@ Now you need to configure swtstore to run it correctly.
 Configure swtstore
 ------------------
 
+* Create a directory named ``logs``. This directory will contain the log file of sweet store.
+
 * Copy the contents of ``sample_config.py`` inside the ``swtstore`` directory
   into ``config.py`` inside ``swtstore`` directory itself.
 
