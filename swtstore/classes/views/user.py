@@ -52,7 +52,9 @@ def login():
                                         user_email)
                 current_app.logger.info('creating new user: %s', user_email)
 
-                new_user = User('', user_email)
+                # get the email_id and use it as a default username
+                temp_username = user_email.split('@')[0]
+                new_user = User(temp_username, user_email)
                 new_user.persist()
                 current_user = new_user
 
@@ -149,7 +151,7 @@ def authorizedApps():
     if request.method == 'GET':
         authorized_clients = AuthorizedClients.getByUser(user)
         return render_template('user/authorized_apps.html',
-                        authorized_clients=authorized_clients)
+                authorized_clients=authorized_clients)
 
     # else POST request
     client_id = request.form.get('revoke-id', '')
