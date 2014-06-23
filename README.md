@@ -12,8 +12,7 @@ The store for the decentralized, semantic, social web tweets a.k.a SWeeTs!
 
 This README is about installing, configuring and running/deploying this
 application. If you want to know more about SWeeTs, please go to
-[wiki.janastu.org/Sweet_Web](http://janastu.org/technoscience/index.php/Sweet_Web) and
-[trac.pantoto.org/sweet-web](http://trac.pantoto.org/sweet-web).
+ [wiki.janastu.org/Sweet_Web](http://janastu.org/technoscience/index.php/Sweet_Web).
 
 This application acts as the repository store for all the SWeeTs that are
 generated from the clients registered with the sweet store. It provides
@@ -110,7 +109,7 @@ Now you need to configure swtstore to run it correctly.
 Configure swtstore
 ------------------
 
-* Make sure you have configured the user management module with correct values.
+* Create a directory named ``logs``. This directory will contain the log file of sweet store.
 
 * Copy the contents of ``sample_config.py`` inside the ``swtstore`` directory
   into ``config.py`` inside ``swtstore`` directory itself.
