@@ -18,7 +18,7 @@ class Context(db.Model):
     __tablename__ = 'contexts'
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(256), nullable=False, unique=True)
+    name = db.Column(db.String(255), nullable=False, unique=True)
     definition = db.Column(JSONType, nullable=False)
     created = db.Column(db.DateTime, default=datetime.utcnow)
     modified = db.Column(db.DateTime, default=None)

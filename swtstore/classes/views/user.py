@@ -103,6 +103,7 @@ def profile():
 
     current_user.update(username=username)
 
+    current_app.logger.debug('url_for(profile): %s', url_for('profile'))
     return redirect(url_for('profile'))
 
 

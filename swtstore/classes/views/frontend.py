@@ -2,7 +2,7 @@
 # classes/views/frontend.py
 
 
-from flask import Module, render_template
+from flask import Module, render_template, current_app
 
 from swtstore.classes.models import Sweet
 
@@ -15,6 +15,7 @@ def index():
     sweets = Sweet.getFrontendSwts()
     sweets = [sweet.to_dict() for sweet in sweets]
 
+    current_app.logger.info('swts count: %s', len(sweets))
     return render_template('frontend/index.html', sweets=sweets)
 
 
