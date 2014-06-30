@@ -40,12 +40,12 @@ class Sweet(db.Model):
         self.how = how
 
     def __repr__(self):
-        return '[Sweet Object: <%s : @%s: #%s : %s>]' % (self.id, self.who,
-                                                        self.what, self.where)
+        return u'[Sweet Object: <%s : @%s: #%s : %s>]' % (self.id, self.who,
+                                                          self.what, self.where)
 
     def __str__(self):
-        return '[Sweet Object: <%s : @%s: #%s : %s>]' % (self.id, self.who,
-                                                        self.what, self.where)
+        return u'[Sweet Object: <%s : @%s: #%s : %s>]' % (self.id, self.who,
+                                                          self.what, self.where)
 
     # Update the sweet - only 'how' and 'where' fields can be updated
     def update(self, **kwargs):
@@ -81,7 +81,7 @@ class Sweet(db.Model):
                                         (each['what']))
 
             current_app.logger.debug('SWEET PAYLOAD\n---\n%s\n%s\n%s\n%s\n----',
-                                    who, what, each['where'], each['how'])
+                                     who, what, each['where'], each['how'])
 
             new_sweet = Sweet(who, what, each['where'], each['how'])
 
@@ -100,7 +100,7 @@ class Sweet(db.Model):
     @staticmethod
     def getByCreator(user):
         return Sweet.query.filter_by(who=user).\
-                order_by(Sweet.created.desc()).all()
+            order_by(Sweet.created.desc()).all()
 
     # allow to query all sweets based on "who", "what" and "where" params
     @staticmethod
@@ -114,6 +114,7 @@ class Sweet(db.Model):
 
     # return a dictionary of data members
     def to_dict(self):
+
         return {
             'id': self.id,
             'who': self.who.username,
@@ -123,7 +124,7 @@ class Sweet(db.Model):
             'where': self.where,
             'how': self.how,
             #'created': self.created.isoformat()
-            'created': self.created.strftime('%a, %d %b %Y, %I:%M %p UTC'),
+            'created': self.created.strftime('%a, %d %b %Y, %I:%M %p UTC')
         }
 
     # create and persist the sweet to the database
