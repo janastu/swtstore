@@ -31,7 +31,7 @@ class Client(db.Model):
 
     _is_private = db.Column(db.Boolean)
 
-    _host_url = db.Column(db.String(60))
+    _host_url = db.Column(db.String(255))
 
     _redirect_uris = db.Column(db.Text)
     _default_scopes = db.Column(db.Text)
