@@ -40,5 +40,5 @@ class DefaultConfig():
     # The URL at which this app, swtstore, is deployed.
     SWTSTORE_URL = 'http://demo.swtr.us'
 
-    # Bearer token expiry
+    # Bearer token expiry (in seconds)
     OAUTH2_PROVIDER_TOKEN_EXPIRES_IN = 3600

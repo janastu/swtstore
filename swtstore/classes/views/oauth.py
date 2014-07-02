@@ -1,13 +1,18 @@
 # -*- coding utf-8 -*-
 # classes/views/oauth.py
 
-from flask import Module, jsonify, request, render_template, current_app
+from flask import Module, jsonify, request, render_template, current_app,\
+    make_response, json
 
 from swtstore.classes import oauth
 from swtstore.classes.models import Client, AuthorizedClients, User
+from swtstore.config import DefaultConfig
+from swtstore.classes.utils.httputils import makeCORSHeaders
 
 
 Oauth = Module(__name__)
+
+config = DefaultConfig()
 
 
 @Oauth.route('/authorize', methods=['GET', 'POST'])
@@ -55,6 +60,21 @@ def access_token():
     #print request.form
     current_app.logger.debug('access token touched..')
     return None
+
+
+@Oauth.route('/token-expires-in', methods=['GET'])
+def token_expires_in():
+    response = make_response()
+    origin = request.headers.get('Origin', '*')
+    response = makeCORSHeaders(response, origin)
+
+    if request.method == 'OPTIONS':
+        response.status_code = 200
+        return response
+
+    response.data = json.dumps({'expires_in':
+                                config.OAUTH2_PROVIDER_TOKEN_EXPIRES_IN})
+    return response
 
 
 @Oauth.route('/errors')
