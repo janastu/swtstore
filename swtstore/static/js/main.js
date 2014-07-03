@@ -72,6 +72,7 @@
   };
 
   ss.editSweet = function(event) {
+    event.preventDefault();
     var target = $(event.currentTarget).attr('for');
     var how = JSON.parse($(event.currentTarget).siblings('.how').html());
     //console.log(how);

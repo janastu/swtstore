@@ -25,12 +25,12 @@
 
         <small><i>created: {{sweet.created }}</i></small>
 
-        <span class="pull-right permalink">
-          <a href="#">
+        <span class="pull-right permalink" title="Permalink to the sweet">
+          <a href="{{ url_for('sweet.showSweet', id=sweet.id) }}">
             <i class="glyphicon glyphicon-share"></i>
           </a>
         </span>
-        <span class="pull-right edit-sweet" for="{{ sweet.id }}">
+        <span class="pull-right edit-sweet" for="{{ sweet.id }}" title="Edit this sweet">
           <a href="#">
             <i class="glyphicon glyphicon-edit"></i>
           </a>
