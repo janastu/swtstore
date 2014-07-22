@@ -20,7 +20,7 @@ requires = [
     'Flask==0.10.1',
     'Flask-SQLAlchemy==1.0',
     'sqlalchemy==0.9.4',
-    'Flask-OAuthlib==0.4.3',
+    'Flask-OAuthlib',
     'requests'
 ]
 
