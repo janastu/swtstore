@@ -2,7 +2,7 @@
 # classes/views/frontend.py
 
 
-from flask import Module, render_template, current_app
+from flask import Module, render_template, current_app, request
 
 from swtstore.classes.models import Sweet
 
@@ -11,14 +11,19 @@ frontend = Module(__name__)
 
 
 @frontend.route('/', methods=['GET'])
-@frontend.route('/<int:page>', methods=['GET'])
-def index(page=1):
-    sweets = Sweet.getFrontendSwts(page)
-    formatted_sweets = [sweet.to_dict() for sweet in sweets.items]
+def index():
 
-#    current_app.logger.info('swts count: %s', len(sweets))
+    page = 1
+    if request.args.get('page'):
+        page = int(request.args.get('page'))
+
+    paginated_swts = Sweet.getFrontendSwts(page)
+    sweets = [sweet.to_dict() for sweet in paginated_swts.items]
+
+    current_app.logger.info('swts count: %s', len(sweets))
+
     return render_template('frontend/index.html', sweets=sweets,
-                           formatted_sweets=formatted_sweets)
+                           paginated_swts=paginated_swts)
 
 
 # Create a new sweet context
