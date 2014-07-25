@@ -51,7 +51,7 @@ def getSweetById(id):
 # Post a sweet to the sweet store
 @api.route('/sweets', methods=['OPTIONS', 'POST'])
 @oauth.require_oauth('email', 'sweet')
-def createSweet(oauth_request):
+def createSweet():
 
     response = make_response()
 
@@ -77,7 +77,7 @@ def createSweet(oauth_request):
     current_app.logger.debug('type of payload %s', type(payload))
     # Get the authenticated user from the oauth request object.
     # Older swtr clients sending `who` in string will be ignored.
-    who = oauth_request.user
+    who = request.oauth.user
 
     try:
         swts = Sweet.createSweets(who, payload)
@@ -208,9 +208,9 @@ def createContext():
 # Send back logged in user data
 @api.route('/users/me', methods=['GET', 'OPTIONS'])
 @oauth.require_oauth('email')
-def getCurrentUser(oauth_request):
+def getCurrentUser():
     response = make_response()
-    response = makeCORSHeaders(response, oauth_request.client.host_url)
+    response = makeCORSHeaders(response, request.oauth.client.host_url)
     response.status_code = 200
 
     if request.method == 'OPTIONS':
@@ -218,5 +218,5 @@ def getCurrentUser(oauth_request):
 
     response.headers['Content-type'] = 'application/json'
     # We have the user object along with the oauth request. Just return it back
-    response.data = json.dumps(oauth_request.user.to_dict())
+    response.data = json.dumps(request.oauth.user.to_dict())
     return response
