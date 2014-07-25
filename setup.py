@@ -28,10 +28,10 @@ requires = [
 setup(
     name='swtstore',
     version='0.1 - alpha',
-    url='https://git.pantoto.org/sweet-web',
+    url='https://github.com/janastu/swtstore',
     license='BSD',
     author='swtstore authors',
-    author_email='rayanon004@gmail.com',
+    author_email='anon@servelots.com',
     description='Server-side store for decentralized, semantic, social, web\
                 tweets',
     long_description=__doc__,
