@@ -1,13 +1,13 @@
 {% extends "layout.html" %}
 
 {% block body %}
-  <div id="store-stats">
+<div id="store-stats">
   </div>
 
-  {% if sweets|length > 0 %}
+  {% if formatted_sweets|length > 0 %}
 
     <ul class="list-group">
-    {% for sweet in sweets %}
+    {% for sweet in formatted_sweets %}
       <li class="list-group-item">
         <span class="who">
           <a href="#">
@@ -37,7 +37,10 @@
       </li>
     {% endfor %}
     </ul>
-
+    {% if sweets.has_prev %}<a href="{{ url_for('index', page=sweets.prev_num) }}">Newer posts</a>{% else %}Newer posts{% endif %} |
+    {% if sweets.has_next %}
+    <a href="{{ url_for('index', page=sweets.next_num) }}">Older sweets</a>
+    {% endif %}
   {% else %}
   <div class="row">
     <div class="col-md-5">
@@ -47,4 +50,3 @@
   {% endif %}
 
 {% endblock %}
-

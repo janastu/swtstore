@@ -11,12 +11,14 @@ frontend = Module(__name__)
 
 
 @frontend.route('/', methods=['GET'])
-def index():
-    sweets = Sweet.getFrontendSwts()
-    sweets = [sweet.to_dict() for sweet in sweets]
+@frontend.route('/<int:page>', methods=['GET'])
+def index(page=1):
+    sweets = Sweet.getFrontendSwts(page)
+    formatted_sweets = [sweet.to_dict() for sweet in sweets.items]
 
-    current_app.logger.info('swts count: %s', len(sweets))
-    return render_template('frontend/index.html', sweets=sweets)
+#    current_app.logger.info('swts count: %s', len(sweets))
+    return render_template('frontend/index.html', sweets=sweets,
+                           formatted_sweets=formatted_sweets)
 
 
 # Create a new sweet context

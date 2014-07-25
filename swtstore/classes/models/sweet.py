@@ -13,6 +13,9 @@ from swtstore.classes.models import Context, User
 from swtstore.classes.exceptions import InvalidPayload, ContextDoNotExist
 
 
+POSTS_PER_PAGE = 5  # Move this to conf file. TODO
+
+
 class Sweet(db.Model):
     """ customary docstring """
 
@@ -93,8 +96,10 @@ class Sweet(db.Model):
 
     # get Sweets for frontend
     @staticmethod
-    def getFrontendSwts():
-        return Sweet.query.order_by(Sweet.created.desc()).all()
+    def getFrontendSwts(page):
+        return Sweet.query.order_by(Sweet.created.desc()).paginate(
+            page, POSTS_PER_PAGE, False)
+        #return Sweet.query.order_by(Sweet.created.desc()).all()
 
     # get all sweets authored by a particular user
     @staticmethod
