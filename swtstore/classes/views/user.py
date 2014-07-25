@@ -5,7 +5,7 @@ import requests
 
 # flask imports
 from flask import Module, request, render_template, session,\
-    make_response, url_for, redirect, json, current_app
+    make_response, url_for, redirect, json, current_app, abort
 
 # swtstore imports
 from swtstore.classes.models import User, Sweet, Context, Client,\
@@ -152,7 +152,7 @@ def authorizedApps():
     if request.method == 'GET':
         authorized_clients = AuthorizedClients.getByUser(user)
         return render_template('user/authorized_apps.html',
-                authorized_clients=authorized_clients)
+                               authorized_clients=authorized_clients)
 
     # else POST request
     client_id = request.form.get('revoke-id', '')
@@ -162,3 +162,13 @@ def authorizedApps():
         AuthorizedClients.revoke(user=user, client=client)
 
     return redirect(url_for('authorizedApps'))
+
+
+@user.route('/<int:id>', methods=['GET'])
+def publicProfile(id):
+
+    user = User.query.get(id)
+    if user is None:
+        abort(404)
+
+    return render_template('user/profile.html', user=user.to_dict())

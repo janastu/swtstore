@@ -10,7 +10,7 @@
     {% for sweet in sweets %}
       <li class="list-group-item">
         <span class="who">
-          <a href="#">
+          <a href="{{ url_for('user.publicProfile', id=sweet.user_id) }}">
             @{{ sweet.who }}
           </a>
         </span>

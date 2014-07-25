@@ -130,7 +130,8 @@ def querySweets():
 
     if len(sweets) == 0:
         current_app.logger.info('No sweets found to satisfy query..')
-        abort(404)
+        #abort(404)
+        response.data = json.dumps([])
 
     swts = [i.to_dict() for i in sweets]
 

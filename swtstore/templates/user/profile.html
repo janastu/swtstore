@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+{% block body %}
+
+<!--h4> Update your profile details </h4>
+
+<p class="text-muted"> Please fill in the details below and click update button
+</p-->
+
+<form role="form" method="" action="">
+  <div class="form-group">
+    <label class="control-label">Username</label>
+    <p class="form-control-static"> {{ user.username }} </p>
+  </div>
+  <div class="form-group">
+    <label class="control-label">Joined</label>
+    <div class="">
+      <p class="form-control-static" id="user-created">
+      {{ user.created }}
+      </p>
+    </div>
+  </div>
+  <!--div class="form-group">
+    <label class="control-label">Last Active</label>
+    <div class="">
+      <p class="form-control-static" id="last-active">
+      {{ user.last_active }}
+      </p>
+    </div>
+  </div-->
+</form>
+
+{% endblock %}
