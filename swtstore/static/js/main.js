@@ -94,7 +94,7 @@
 
         $.ajax({
           type: 'PUT',
-          url: 'http://localhost:5001/api/sweets/'+target,
+          url: '/api/sweets/'+target,
           contentType: 'application/json',
           data: JSON.stringify(how),
           success: function(data) {
