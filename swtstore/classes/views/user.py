@@ -164,10 +164,10 @@ def authorizedApps():
     return redirect(url_for('authorizedApps'))
 
 
-@user.route('/<int:id>', methods=['GET'])
-def publicProfile(id):
+@user.route('/<int:user_id>', methods=['GET'])
+def publicProfile(user_id):
 
-    user = User.query.get(id)
+    user = User.query.get(user_id)
     if user is None:
         abort(404)
 

@@ -20,7 +20,7 @@ def showSweet(id):
     print "recvd sweet id: %s" % (id)
     sweet = Sweet.query.get(id)
     if sweet:
-        print "sweet found " + str(sweet)
+        print "sweet found %s" % (sweet)
         return render_template('sweet/specific.html', sweet=sweet.to_dict())
     else:
         abort(404)
