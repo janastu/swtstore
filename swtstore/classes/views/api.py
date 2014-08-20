@@ -55,7 +55,7 @@ def createSweet():
 
     response = make_response()
 
-    client = oauth_request.client
+    client = request.oauth.client
 
     #TODO: make a decorator of CORS request
     response = makeCORSHeaders(response, client.host_url)
