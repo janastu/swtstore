@@ -1,0 +1,64 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<div id="store-stats">
+  </div>
+
+  {% if sweets|length > 0 %}
+
+    <ul class="list-group">
+    {% for sweet in sweets %}
+      <li class="list-group-item">
+        <span class="who">
+          <a href="{{ url_for('user.publicProfile', user_id=sweet.user_id) }}">
+            @{{ sweet.who }}
+          </a>
+        </span>
+        <span class="what">
+          <b> #{{ sweet.what }} </b>
+        </span>
+        <span class="where">
+          {{ sweet.where }}
+        </span>
+        <p></p>
+        <span class="how">
+          {{ sweet.how|escape|safe }}
+        </span>
+
+        <p></p>
+        <span class="created">created:
+          <span>{{ sweet.created }}</span>
+        </span>
+
+        <span class="pull-right permalink">
+          <a href="{{ url_for('sweet.showSweet', id=sweet.id) }}">
+          <i class="glyphicon glyphicon-share"></i>
+        </a>
+      </li>
+    {% endfor %}
+    </ul>
+    <ul class="pager">
+      {% if paginated_swts.has_prev %}
+      <li class="previous">
+        <a href="{{ url_for('index', page=paginated_swts.prev_num) }}">
+          &laquo; Newer sweets
+        </a>
+      </li>
+      {% endif %}
+      {% if paginated_swts.has_next %}
+      <li class="next">
+        <a href="{{ url_for('index', page=paginated_swts.next_num) }}">
+          Older sweets &raquo;
+        </a>
+      </li>
+      {% endif %}
+    </ul>
+  {% else %}
+  <div class="row">
+    <div class="col-md-5">
+      <h4><em>Unbelievable! No sweets yet!!</em></h4>
+    </div>
+  </div>
+  {% endif %}
+
+{% endblock %}

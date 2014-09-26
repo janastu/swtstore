@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+<ul class="list-group">
+  <li class="list-group-item">
+    <span class="who">
+      <a href="#">
+        @{{ sweet.who }}
+      </a>
+    </span>
+    <span class="what">
+      <b> #{{ sweet.what }} </b>
+    </span>
+    <span class="where">
+      {{ sweet.where }}
+    </span>
+    <p></p>
+    <span class="how">
+      {{ sweet.how|escape|safe }}
+    </span>
+
+    <small><i>created: {{sweet.created }}</i></small>
+  </li>
+</ul>
+
+{% endblock %}
+

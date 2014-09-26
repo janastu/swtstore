@@ -1,0 +1,68 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+  {% if sweets|length > 0 %}
+
+    <ul class="list-group">
+    {% for sweet in sweets %}
+      <li class="list-group-item">
+        <span class="who">
+          <a href="#">
+            @{{ sweet.who }}
+          </a>
+        </span>
+        <span class="what">
+          <b> #{{ sweet.what }} </b>
+        </span>
+        <span class="where">
+          {{ sweet.where }}
+        </span>
+        <p></p>
+        <span class="how">
+          {{ sweet.how|tojson }}
+        </span>
+
+        <small><i>created: {{sweet.created }}</i></small>
+
+        <span class="pull-right permalink" title="Permalink to the sweet">
+          <a href="{{ url_for('sweet.showSweet', id=sweet.id) }}">
+            <i class="glyphicon glyphicon-share"></i>
+          </a>
+        </span>
+        <span class="pull-right edit-sweet" for="{{ sweet.id }}" title="Edit this sweet">
+          <a href="#">
+            <i class="glyphicon glyphicon-edit"></i>
+          </a>
+        </span>
+      </li>
+    {% endfor %}
+    </ul>
+
+  {% else %}
+  <div class="row">
+    <div class="col-md-5">
+      <h4><em>Unbelievable! No sweets yet!!</em></h4>
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="modal fade" id="edit-sweet-modal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">Edit Sweet </h4>
+        </div>
+        <div class="modal-body"></div>
+        <div
+          class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" id="save-edited-sweet">Save changes</button>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+
+{% endblock %}
+

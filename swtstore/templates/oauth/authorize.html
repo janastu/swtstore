@@ -1,0 +1,43 @@
+{% extends "layout.html" %}
+{% block body %}
+<h4> Allow Access ?</h4>
+<p class="text-muted">
+  The following application wants to get permission to do stuff(?) on the <i>swt
+  web</i> platform on your behalf.
+</p>
+
+<form role="form" method="POST" action="{{ url_for('oauth.authorize') }}">
+  <div class="form-group">
+    <p class="form-control-static text-primary">
+      {{ client.name }} at {{ client.host_url }} wants
+      to get permission to post data to swt store
+    </p>
+  </div>
+  <div class="form-group">
+    <label class="control-label">Scopes</label>
+    <div class="">
+      <p class="form-control-static">{{ scopes|join(',') }}</p>
+    </div>
+  </div>
+  <input type="hidden" name="client_id" value="{{ client.id }}">
+  <input type="hidden" name="scope" value="{{ scopes|join(' ') }}">
+  <input type="hidden" name="response_type" value="{{ response_type }}">
+  {% if state %}
+  <input type="hidden" name="state" value="{{ state }}">
+  {% endif %}
+  <button type="submit" name="confirm" value="yes" class="btn btn-primary">Allow</button>
+  <button type="submit" name="confirm" value="no" class="btn btn-default">Deny</button>
+</form>
+
+{% endblock %}
+
+{% block scripts %}
+
+<script>
+  var created = new Date("{{ user.created }}");
+  window.onload = function() {
+    $('#user-created').html(created.toString());
+  };
+</script>
+
+{% endblock %}

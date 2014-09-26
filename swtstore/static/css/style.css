@@ -1,0 +1,32 @@
+.header {
+  height: 42px;
+  border-bottom: 1px solid #eee;
+}
+
+.container {
+  max-width: 70%;
+}
+
+.content {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.user-menu a {
+  color: #000;
+}
+
+.footer {
+  margin-top: 30px;
+  margin-bottom: 10px;
+  border-top: 1px solid #eee;
+  font-size: 0.8em;
+  text-align: center;
+}
+.created {
+  font-size: 0.9em;
+  font-style: italic;
+}
+.permalink {
+  padding-left: 3px;
+}

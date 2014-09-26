@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+{% block body %}
+<h4> Register a new context with the <i>swt web</i> platform </h4>
+<p class="text-muted"> Please fill in the details below and click Register button </p>
+
+<form role="form" method="POST" action="{{ url_for('context.register') }}">
+  <div class="form-group">
+    <label for="name">Name </label>
+    <input type="text" class="form-control" name="name" id="name" placeholder="Name of the context">
+  </div>
+  <div class="form-group">
+    <label for="defn">Definition</label>
+    <p class="help-block"> JSON-LD definition. Insert a JSON-LD.</p>
+    <textarea class="form-control" rows="4" id="defn" name="defn">
+    </textarea>
+  </div>
+  <button type="submit" class="btn btn-primary">Register</button>
+</form>
+{% endblock %}

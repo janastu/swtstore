@@ -1,0 +1,65 @@
+{% extends "layout.html" %}
+{% block body %}
+<h4> Register a new app with the <i>swt web</i> platform </h4>
+<p class="text-muted"> Please fill in the details below and click Register button </p>
+
+<form role="form" method="POST" action="{{ url_for('app.register') }}">
+  <div class="form-group">
+    <label for="name">Name </label>
+    <input type="text" class="form-control" name="name" id="name" placeholder="Name of the application">
+  </div>
+  <div class="form-group">
+    <label for="desc">Description</label>
+    <p class="help-block"> Brief description of your application. (Optional)</p>
+    <textarea class="form-control" rows="4" id="desc" name="desc">
+    </textarea>
+  </div>
+  <div class="form-group">
+    <label for="host_url">Host URL</label>
+    <p class="help-block">URL where your app is deployed</p>
+    <input type="text" class="form-control" name="host_url" id="host_url" placeholder="host URL">
+  </div>
+  <div class="form-group">
+    <label for="redirect_uris">Redirect URLs</label>
+    <p class="help-block">Your app URL where it should be redirected once the user is authorized.</p>
+    <input type="text" class="form-control" name="redirect_uris" id="redirect_uris" placeholder="redirect URLs">
+  </div>
+  <div class="form-group">
+    <label for="scopes">Scopes</label>
+    <input type="text" class="form-control" name="scopes" id="scopes" value="email">
+  </div>
+  <button type="submit" class="btn btn-primary">Register</button>
+</form>
+{% endblock %}
+{% block scripts %}
+<script>
+  // form validation
+  /*$('form').on('submit', function(event) {
+    console.log('here..');
+    if(!$('#name').val()) {
+      event.preventDefault();
+      $('#name').parent().addClass('has-feedback');
+      $('#name').parent().addClass('has-error');
+      return false;
+    }
+    if(!$('#host_url').val()) {
+      event.preventDefault();
+      $('#host_url').parent().addClass('has-feedback');
+      $('#name').parent().addClass('has-error');
+      return false;
+    }
+    if(!$('#redirect_uris').val()) {
+      event.preventDefault();
+      $('#redirect_uris').parent().addClass('has-feedback');
+      $('#name').parent().addClass('has-error');
+      return false;
+    }
+    if(!$('#scopes').val()) {
+      event.preventDefault();
+      $('#scopes').parent().addClass('has-feedback');
+      $('#name').parent().addClass('has-error');
+      return false;
+    }
+  });*/
+</script>
+{% endblock %}

@@ -1,0 +1,102 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SWT Store</title>
+    <link rel=stylesheet type=text/css href="{{ url_for('.static', filename='css/bootstrap.min.css') }}">
+    <link rel=stylesheet type=text/css href="{{ url_for('.static', filename='css/bootstrap-theme.min.css') }}">
+    <link rel=stylesheet type=text/css href="{{ url_for('.static', filename='css/style.css') }}">
+    {% block head %}{% endblock %}
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <ul class="nav nav-tabs pull-right" role="navigation">
+          <li>
+            <a href="{{ url_for('frontend.index') }}"> Home </a>
+          </li>
+          {% if not session.email %}
+          <li>
+            <a id="login" href="#"> Login </a>
+          </li>
+          {% else %}
+          <!-- swts list -->
+          <li>
+            <a href="{{ url_for('user.mySweets') }}"> My Sweets </a>
+          </li>
+          <!-- the cog menu -->
+          <li class="dropdown user-menu">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+              <span class="glyphicon glyphicon-cog"></span>
+            </a>
+            <ul class="dropdown-menu" role="menu">
+              <li> <a href="{{ url_for('app.register') }}">Register New App</a> </li>
+              <li> <a href="{{ url_for('user.myApps') }}">Registered Apps</a> </li>
+              <li class="divider"></li>
+              <li> <a href="{{ url_for('context.register') }}">Register New Context</a> </li>
+              <li> <a href="{{ url_for('user.myContexts') }}">Registered Contexts</a> </li>
+            </ul>
+          </li>
+          <!-- the user menu -->
+          <li class="dropdown user-menu">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+              <span class="glyphicon glyphicon-user"></span>
+              <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu" role="menu">
+              <li>
+              <a href="{{ url_for('user.profile') }}"><small>
+                  {{ session.email }}
+              </small></a>
+              </li>
+              <li>
+                <a href="{{ url_for('user.authorizedApps') }}">
+                  My authorized apps
+                </a>
+              </li>
+              <li class="divider"></li>
+              <li> <a href="#" id="logout"> Logout </a> </li>
+            </ul>
+          </li>
+          {% endif %}
+        </ul>
+        <h3 class="text-muted"> SWTStore </h3>
+      </div>
+      <div class="notif">
+        {% for message in get_flashed_messages() %}
+          <div class="alert alert-danger">{{ message }}</div>
+        {% endfor %}
+      </div>
+      <div class="content">
+        {% block body %}{% endblock %}
+      </div>
+      <!--div class="footer">
+        <a href="http://swtr.us">What is swt web?</a> &bull;
+        <a href="http://swtr.us">FAQ</a> &bull;
+        <a href="http://swtr.us">Help</a> &bull;
+        <a href="#">Stats</a>
+      </div-->
+    </div>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <!--script>window.jQuery || document.write('<script src="{{ url_for('.static', filename='js/jquery-1.9.1.min.js')}}"><\/script>')</script-->
+    <script src="{{ url_for('.static', filename='js/lib/bootstrap.min.js') }}"></script>
+    <script src="https://login.persona.org/include.js"></script>
+
+    <script>
+      window.ss = window.ss || {};
+      ss.loginURL = function() { return "{{ url_for('user.login') }}"; };
+      ss.logoutURL = function() { return "{{ url_for('user.logout') }}"; };
+      ss.loggedInUser = function() {
+        return ("{{ session.email }}") ? "{{ session.email }}" : null;
+      };
+      window.onload = function() {
+        ss.init();
+      };
+    </script>
+    <script src="{{ url_for('.static', filename='js/main.js') }}"></script>
+    {% block scripts %} {% endblock %}
+  </body>
+</html>
