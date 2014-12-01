@@ -81,7 +81,7 @@ Installing
 
 * Clone the repository from <https://git.pantoto.org/sweet-web/sweet-web-engine>
 
-  > `` $ git clone https://git.pantoto.org/sweet-web/sweet-web-engine.git ``
+  > `` $ git clone https://github.com/janastu/swtstore.git ``
 
 * It is recommended to do the installation inside a python virtual
   environment.
