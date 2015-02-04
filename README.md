@@ -79,7 +79,7 @@ installation steps.**
 Installing
 ----------
 
-* Clone the repository from <https://git.pantoto.org/sweet-web/sweet-web-engine>
+* Clone the repository from <https://github.com/janastu/swtstore>
 
   > `` $ git clone https://github.com/janastu/swtstore.git ``
 
