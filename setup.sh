@@ -9,20 +9,28 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 DEPENDENCIES=( postgresql-9.4 postgresql-server-dev-9.4 python-dev python-pip )
 
 cd $DIR
-echo "Installing ${DEPENDENCIES[@]}.."
-echo "sudo apt-get install ${DEPENDENCIES[@]}"
 
-$(sudo apt-get install "${DEPENDENCIES[@]}")
+install_deps() {
+  echo "Installing ${DEPENDENCIES[@]}.."
+  echo "sudo apt-get install ${DEPENDENCIES[@]}"
 
-echo "Installing virtualenv.."
-echo "sudo pip install virtualenv"
-$(sudo pip install virtualenv)
+  sudo apt-get update && sudo apt-get install "${DEPENDENCIES[@]}"
+}
 
-$(virtualenv venv)
-$(source venv/bin/activate)
+install_venv() {
+  echo "Installing virtualenv.."
+  echo "sudo pip install virtualenv"
+  sudo pip install virtualenv
+}
 
-$(python setup.py install)
+activate_venv() {
+  virtualenv venv && source venv/bin/activate
+}
 
-$(cp swtstore/sample_config.py swtstore/config.py)
+install_swtstore() {
+  python setup.py install
+  cp swtstore/sample_config.py swtstore/config.py
+  mkdir logs
+}
 
-$(mkdir logs)
+install_deps && install_venv && activate_venv && install_swtstore
