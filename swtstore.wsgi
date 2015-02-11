@@ -7,5 +7,6 @@ sys.path.insert(0, BASE_DIR)
 #import production_settings
 
 from swtstore import create_app
+from swtstore import config
 
-application = create_app()
+application = create_app(config)

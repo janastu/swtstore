@@ -1,4 +1,4 @@
-from flask import Module, jsonify, request, make_response
+from flask import Blueprint, jsonify, request, make_response
 from flask import abort, g, json, current_app
 
 from swtstore.classes.models import Context, Sweet
@@ -9,7 +9,7 @@ from swtstore.classes.utils.httputils import makeCORSHeaders
 from swtstore.classes import oauth
 
 
-api = Module(__name__)
+api = Blueprint('api', __name__)
 
 
 # Get a specific sweet

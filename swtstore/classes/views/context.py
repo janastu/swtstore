@@ -1,13 +1,13 @@
 # -*- coding utf-8 -*-
 # classes/views/context.py
 
-from flask import Module, request, render_template, redirect,\
+from flask import Blueprint, request, render_template, redirect,\
     url_for, json, current_app, abort
 
 from swtstore.classes.models import Context, User
 
 
-context = Module(__name__)
+context = Blueprint('context', __name__)
 
 
 @context.route('/register', methods=['GET', 'POST'])

@@ -1,7 +1,7 @@
 # -*- coding utf-8 -*-
 # classes/views/apps.py
 
-from flask import Module, request, render_template, redirect,\
+from flask import Blueprint, request, render_template, redirect,\
     url_for, abort
 
 from werkzeug.security import gen_salt
@@ -10,7 +10,7 @@ from swtstore.classes.models import Client, User
 from swtstore.classes.utils import urlnorm
 
 
-app = Module(__name__)
+app = Blueprint('app', __name__)
 
 
 @app.route('/register', methods=['GET', 'POST'])

@@ -10,9 +10,7 @@ from logging.handlers import RotatingFileHandler
 from flask import Flask, request, jsonify, render_template, make_response
 
 from classes.database import db
-from config import DefaultConfig
 from classes import views
-#from classes import models
 from classes import oauth
 
 __all__ = ['create_app', 'getDBInstance']
@@ -45,15 +43,15 @@ def create_app(config=None, app_name=None, modules=None):
     configure_logging(app)
     configure_errorhandlers(app)
     configure_extensions(app)
-    #configure_beforehandlers(app)
-    configure_modules(app, modules)
+    # configure_beforehandlers(app)
+    configure_blueprints(app, modules)
 
     return app
 
 
 def configure_app(app, config):
 
-    app.config.from_object(DefaultConfig())
+    app.config.from_object((config))
 
     if config is not None:
         app.config.from_object(config)
@@ -61,9 +59,9 @@ def configure_app(app, config):
     app.config.from_envvar('APP_CONFIG', silent=True)
 
 
-def configure_modules(app, modules):
+def configure_blueprints(app, modules):
     for module, url_prefix in modules:
-        app.register_module(module, url_prefix=url_prefix)
+        app.register_blueprint(module, url_prefix=url_prefix)
 
 
 def configure_extensions(app):
@@ -83,8 +81,6 @@ def configure_errorhandlers(app):
     if app.testing:
         return
 
-    # TODO: with all these request can we send back the respective HTTP status
-    # codes instead of 200?
     @app.errorhandler(404)
     def not_found(error):
         response = make_response()
@@ -127,7 +123,7 @@ def configure_errorhandlers(app):
         response.status_code = 400
 
         # Check if we have any custom error messages
-        #if g.error:
+        # if g.error:
         #    print 'g.error:'
         #    print g.error
         #    error = g.error

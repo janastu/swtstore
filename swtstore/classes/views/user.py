@@ -4,19 +4,17 @@
 import requests
 
 # flask imports
-from flask import Module, request, render_template, session,\
+from flask import Blueprint, request, render_template, session,\
     make_response, url_for, redirect, json, current_app, abort
 
 # swtstore imports
 from swtstore.classes.models import User, Sweet, Context, Client,\
     AuthorizedClients
 
-from swtstore.config import DefaultConfig
+from swtstore import config
 
 
-config = DefaultConfig()
-
-user = Module(__name__)
+user = Blueprint('user', __name__)
 
 
 @user.route('/login', methods=['POST'])

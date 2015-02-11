@@ -2,12 +2,12 @@
 # classes/views/sweet.py
 
 
-from flask import Module, render_template, abort
+from flask import Blueprint, render_template, abort
 
 from swtstore.classes.models import Sweet
 
 
-sweet = Module(__name__)
+sweet = Blueprint('sweet', __name__)
 
 
 @sweet.route('/<int:id>', methods=['GET'])

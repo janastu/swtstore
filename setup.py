@@ -20,6 +20,7 @@ requires = [
     'Flask==0.10.1',
     'Flask-SQLAlchemy==1.0',
     'sqlalchemy==0.9.4',
+    'psycopg2',
     'Flask-OAuthlib',
     'requests'
 ]

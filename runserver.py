@@ -14,8 +14,9 @@ sys.path.insert(0, BASE_DIR)
 
 # Import and create the app
 from swtstore import create_app
+from swtstore import config
 
-app = create_app()
+app = create_app(config)
 
 # Run the server if this script is directly executed
 # Presumably, this is development mode

@@ -1,18 +1,16 @@
 # -*- coding utf-8 -*-
 # classes/views/oauth.py
 
-from flask import Module, jsonify, request, render_template, current_app,\
+from flask import Blueprint, jsonify, request, render_template, current_app,\
     make_response, json
 
 from swtstore.classes import oauth
 from swtstore.classes.models import Client, AuthorizedClients, User
-from swtstore.config import DefaultConfig
+from swtstore import config
 from swtstore.classes.utils.httputils import makeCORSHeaders
 
 
-Oauth = Module(__name__)
-
-config = DefaultConfig()
+Oauth = Blueprint('Oauth', __name__)
 
 
 @Oauth.route('/authorize', methods=['GET', 'POST'])

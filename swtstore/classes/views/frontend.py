@@ -2,12 +2,12 @@
 # classes/views/frontend.py
 
 
-from flask import Module, render_template, current_app, request
+from flask import Blueprint, render_template, current_app, request
 
 from swtstore.classes.models import Sweet
 
 
-frontend = Module(__name__)
+frontend = Blueprint('frontend', __name__)
 
 
 @frontend.route('/', methods=['GET'])

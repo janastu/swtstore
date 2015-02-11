@@ -14,8 +14,9 @@ sys.path.insert(0, BASE_DIR)
 
 # Import and create the app; also get the db instance from the current app
 from swtstore import create_app, getDBInstance
+from swtstore import config
 
-app = create_app()
+app = create_app(config)
 
 db = getDBInstance()
 
