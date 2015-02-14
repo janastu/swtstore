@@ -66,3 +66,7 @@ class Context(db.Model):
     @staticmethod
     def getByCreator(id):
         return [each.to_dict() for each in Context.query.filter_by(user_id=id)]
+
+    @staticmethod
+    def getAll():
+        return [each.to_dict() for each in Context.query.all()]

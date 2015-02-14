@@ -168,41 +168,57 @@ def getContextById(id):
 
 # Create a new Sweet Context
 @oauth.require_oauth('email', 'context')
-@api.route('/contexts', methods=['POST'])
+@api.route('/contexts', methods=['GET', 'POST'])
 def createContext():
 
-    response = make_response()
+    if request.method == 'POST':
+        response = make_response()
 
-    # try our best to get the data from request object
-    if request.json:
-        payload = request.json
-    elif request.data:
-        payload = json.loads(request.data)
-    else:
+        # try our best to get the data from request object
+        if request.json:
+            payload = request.json
+        elif request.data:
+            payload = json.loads(request.data)
+        else:
         # if not found send back a 400
-        abort(400)
+            abort(400)
 
-    current_app.logger.debug('new context payload recvd.. %s', payload)
+        current_app.logger.debug('new context payload recvd.. %s', payload)
 
-    # if data is invalid send back 400
-    if 'name' not in payload and 'definition' not in payload:
-        abort(400)
+        # if data is invalid send back 400
+        if 'name' not in payload and 'definition' not in payload:
+            abort(400)
 
-    try:
-        new_context = Context(payload['name'], payload['definition'])
+        try:
+            new_context = Context(payload['name'], payload['definition'])
 
-    except AlreadyExistsError:
+        except AlreadyExistsError:
         # context with same name exists; send back 400?
-        current_app.logger.info('Context Already Exists Error')
-        abort(400)
+            current_app.logger.info('Context Already Exists Error')
+            abort(400)
 
-    current_app.logger.debug('new context created: %s', new_context)
+        current_app.logger.debug('new context created: %s', new_context)
 
-    # all ok. save the new context
-    new_context.persist()
+        # all ok. save the new context
+        new_context.persist()
 
-    response.status_code = 200
-    return response
+        response.status_code = 200
+        return response
+
+    else:
+        # Get all contexts saved in the store.
+        contexts = Context.getAll()
+        response = make_response()
+        origin = request.headers.get('Origin', '*')
+        response = makeCORSHeaders(response, origin)
+        if len(contexts) > 0:
+            response.data = json.dumps(contexts)
+        else:
+            response.status_code = 204  # The server successfully processed the
+                                        # request, but is not returning any
+                                        # content.
+            response.data = json.dumps([{'reason': 'No context found.'}])
+        return response
 
 
 # Send back logged in user data
