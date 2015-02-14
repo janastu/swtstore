@@ -35,7 +35,7 @@ install_venv() {
     echo "sudo pip install virtualenv"
     sudo pip --proxy="$http_proxy" install virtualenv
   else
-    sudo pip --proxy="$http_proxy" --upgrade virtualenv
+    sudo pip --proxy="$http_proxy" install virtualenv --upgrade
   fi
 }
 
