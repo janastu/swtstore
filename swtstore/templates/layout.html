@@ -19,7 +19,7 @@
           </li>
           {% if not session.email %}
           <li>
-            <a id="login" href="#"> Login </a>
+            <a id="login" href="{{ url_for('user.login') }}"> Login </a>
           </li>
           {% else %}
           <!-- swts list -->
@@ -80,13 +80,14 @@
       </div-->
     </div>
 
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="{{ url_for('static', filename='js/lib/jquery.min.js') }}"></script>
     <!--script>window.jQuery || document.write('<script src="{{ url_for('static', filename='js/jquery-1.9.1.min.js')}}"><\/script>')</script-->
     <script src="{{ url_for('static', filename='js/lib/bootstrap.min.js') }}"></script>
-    <script src="https://login.persona.org/include.js"></script>
+    <!-- <script src="https://login.persona.org/include.js"></script> -->
 
     <script>
       window.ss = window.ss || {};
+      ss.appURL = function() { return "{{ url_for('frontend.index') }}";};
       ss.loginURL = function() { return "{{ url_for('user.login') }}"; };
       ss.logoutURL = function() { return "{{ url_for('user.logout') }}"; };
       ss.loggedInUser = function() {
@@ -96,7 +97,7 @@
         ss.init();
       };
     </script>
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <!-- <script src="{{ url_for('static', filename='js/main.js') }}"></script> -->
     {% block scripts %} {% endblock %}
   </body>
 </html>

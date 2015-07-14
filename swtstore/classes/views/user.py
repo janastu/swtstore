@@ -14,58 +14,76 @@ from swtstore.classes.models import User, Sweet, Context, Client,\
 from swtstore import config
 
 
+config = config.DefaultConfig()
+
 user = Blueprint('user', __name__)
 
 
-@user.route('/login', methods=['POST'])
+@user.route('/login', methods=['GET', 'POST'])
 def login():
+    if request.method == 'GET':
+        return render_template('login.html')
 
+    current_app.logger.debug('login request %s', repr(request.form))
     response = make_response()
-    #response = makeCORSHeaders(response)
-
-    if 'assertion' not in request.form:
-        response.status_code = 400
-        return response
-
-    current_app.logger.debug('remote address of request for user login %s',
-                             request.remote_addr)
-
-    data = {'assertion': request.form['assertion'], 'audience':
-            config.SWTSTORE_URL}
-
-    resp = requests.post(config.MOZ_PERSONA_VERIFIER, data=data, verify=True)
-    current_app.logger.debug('Response code from MOZ_PERSONA_VERIFIER %s',
-                             resp.status_code)
-    current_app.logger.debug('Response body: %s', resp.json())
-
-    if resp.ok:
-        verified_data = json.loads(resp.content)
-        if verified_data['status'] == 'okay':
-            user_email = verified_data['email']
-            # check if this user exists in our system
-            current_user = User.query.filter_by(email=user_email).first()
-            # user doesn't exist; create her
-            if current_user is None:
-                current_app.logger.info('user with email %s doesn\'t exist',
-                                        user_email)
-                current_app.logger.info('creating new user: %s', user_email)
-
-                # get the email_id and use it as a default username
-                temp_username = user_email.split('@')[0]
-                new_user = User(temp_username, user_email)
-                new_user.persist()
-                current_user = new_user
-
-            #session.update({'email': verified_data['email']})
-            current_app.logger.info('logging in user with email %s',
-                                    user_email)
+    current_user = User.query.filter_by(email=request.form.get(
+        'email')).first()
+    # if current_user is None:
+    #     temp_username = request.form.get('email').split('@')[0]
+    #     User(temp_username, request.form.get('email'),
+    #          request.form.get('password')).persist()
+    if current_user is not None:
+        if current_user.check_password(request.form.get('password')) is True:
             session['email'] = current_user.email
-
             response.status_code = 200
-            response.data = {'email': user_email}
+            response.data = {'email': current_user.email}
             return response
 
-    response.status_code = 500
+    # #response = makeCORSHeaders(response)
+
+    # if 'assertion' not in request.form:
+    #     response.status_code = 400
+    #     return response
+
+    # current_app.logger.debug('remote address of request for user login %s',
+    #                          request.remote_addr)
+
+    # data = {'assertion': request.form['assertion'], 'audience':
+    #         config.SWTSTORE_URL}
+
+    # resp = requests.post(config.MOZ_PERSONA_VERIFIER, data=data, verify=True)
+    # current_app.logger.debug('Response code from MOZ_PERSONA_VERIFIER %s',
+    #                          resp.status_code)
+    # current_app.logger.debug('Response body: %s', resp.json())
+
+    # if resp.ok:
+    #     verified_data = json.loads(resp.content)
+    #     if verified_data['status'] == 'okay':
+    #         user_email = verified_data['email']
+    #         # check if this user exists in our system
+    #         current_user = User.query.filter_by(email=user_email).first()
+    #         # user doesn't exist; create her
+    #         if current_user is None:
+    #             current_app.logger.info('user with email %s doesn\'t exist',
+    #                                     user_email)
+    #             current_app.logger.info('creating new user: %s', user_email)
+
+    #             # get the email_id and use it as a default username
+    #             temp_username = user_email.split('@')[0]
+    #             new_user = User(temp_username, user_email)
+    #             new_user.persist()
+    #             current_user = new_user
+
+    #         #session.update({'email': verified_data['email']})
+    #         current_app.logger.info('logging in user with email %s',
+    #                                 user_email)
+    #         session['email'] = current_user.email
+
+    #         response.status_code = 200
+    #         response.data = {'email': user_email}
+    #         return response
+
+    # response.status_code = 500
     return response
 
 

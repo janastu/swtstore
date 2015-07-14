@@ -1,5 +1,5 @@
 <body>
-<form id="authorized-form" role="form" method="POST" action="{{ url_for('oauth.authorize') }}">
+<form id="authorized-form" role="form" method="POST" action="{{ url_for('Oauth.authorize') }}">
   <input type="hidden" name="client_id" value="{{ client.id }}">
   <input type="hidden" name="scope" value="{{ scopes|join(' ') }}">
   <input type="hidden" name="response_type" value="{{ response_type }}">

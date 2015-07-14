@@ -16,7 +16,9 @@ sys.path.insert(0, BASE_DIR)
 from swtstore import create_app, getDBInstance
 from swtstore import config
 
-app = create_app(config)
+conf = config.DefaultConfig()  # Pass an instance of the config object to the
+# create_app function
+app = create_app(conf)
 
 db = getDBInstance()
 

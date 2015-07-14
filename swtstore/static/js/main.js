@@ -19,6 +19,7 @@
     // check if the login button exists
     if($('#login').length) {
       $('#login').click(function(e) {
+        // show page to sign up or login.
         e.preventDefault();
         navigator.id.request();
       });
