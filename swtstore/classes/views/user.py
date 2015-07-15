@@ -24,7 +24,6 @@ def login():
     if request.method == 'GET':
         return render_template('login.html')
 
-    current_app.logger.debug('login request %s', repr(request.form))
     response = make_response()
     current_user = User.query.filter_by(email=request.form.get(
         'email')).first()
@@ -32,7 +31,8 @@ def login():
     if current_user is None:
         temp_username = request.form.get('email').split('@')[0]
         current_user = User(temp_username, request.form.get('email'),
-                            request.form.get('password')).persist()
+                            request.form.get('password'))
+        current_user.persist()
         session['email'] = current_user.email
         response.status_code = 200
         response.data = {'email': current_user.email}
