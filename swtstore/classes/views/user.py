@@ -28,17 +28,26 @@ def login():
     response = make_response()
     current_user = User.query.filter_by(email=request.form.get(
         'email')).first()
-    # if current_user is None:
-    #     temp_username = request.form.get('email').split('@')[0]
-    #     User(temp_username, request.form.get('email'),
-    #          request.form.get('password')).persist()
+    # create user if does not exist
+    if current_user is None:
+        temp_username = request.form.get('email').split('@')[0]
+        current_user = User(temp_username, request.form.get('email'),
+                            request.form.get('password')).persist()
+        session['email'] = current_user.email
+        response.status_code = 200
+        response.data = {'email': current_user.email}
+        return response
     if current_user is not None:
         if current_user.check_password(request.form.get('password')) is True:
             session['email'] = current_user.email
             response.status_code = 200
             response.data = {'email': current_user.email}
             return response
-
+        else:
+            response.status_code = 401
+            response.data = {"error": "The credentials don't seem to match," +
+                             "please try again."}
+            return response
     # #response = makeCORSHeaders(response)
 
     # if 'assertion' not in request.form:
