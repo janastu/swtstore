@@ -95,7 +95,7 @@ def createSweet():
 # The Sweet query API: /sweets/q?who=<>&what=<>&where=<>
 # args: who, what, where
 @api.route('/sweets/q', methods=['GET', 'OPTIONS'])
-#@oauth.require_oauth('sweet')
+# @oauth.require_oauth('sweet')
 def querySweets():
 
     response = make_response()
@@ -130,7 +130,7 @@ def querySweets():
 
     if len(sweets) == 0:
         current_app.logger.info('No sweets found to satisfy query..')
-        #abort(404)
+        #  abort(404)
         response.data = json.dumps([])
 
     swts = [i.to_dict() for i in sweets]

@@ -16,7 +16,7 @@ sys.path.insert(0, BASE_DIR)
 from swtstore import create_app
 from swtstore import config
 
-app = create_app(config)
+app = create_app(config.DefaultConfig())
 
 # Run the server if this script is directly executed
 # Presumably, this is development mode
