@@ -57,7 +57,7 @@ def createSweet():
 
     client = request.oauth.client
 
-    #TODO: make a decorator of CORS request
+    # TODO: make a decorator of CORS request
     response = makeCORSHeaders(response, client.host_url)
 
     if request.method == 'OPTIONS':
@@ -220,3 +220,11 @@ def getCurrentUser():
     # We have the user object along with the oauth request. Just return it back
     response.data = json.dumps(request.oauth.user.to_dict())
     return response
+
+
+# Give out stats about sweets on the store, total count of sweets per
+# user, count of sweets grouped by tags
+@api.route('/stats/users', methods=['GET'])
+def get_stats():
+    stats = Sweet.queryGroupByUsername()
+    return jsonify(stats)
