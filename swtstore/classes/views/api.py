@@ -57,7 +57,7 @@ def createSweet():
 
     client = request.oauth.client
 
-    #TODO: make a decorator of CORS request
+    # TODO: make a decorator of CORS request
     response = makeCORSHeaders(response, client.host_url)
 
     if request.method == 'OPTIONS':
@@ -95,7 +95,7 @@ def createSweet():
 # The Sweet query API: /sweets/q?who=<>&what=<>&where=<>
 # args: who, what, where
 @api.route('/sweets/q', methods=['GET', 'OPTIONS'])
-#@oauth.require_oauth('sweet')
+# @oauth.require_oauth('sweet')
 def querySweets():
 
     response = make_response()
@@ -130,7 +130,7 @@ def querySweets():
 
     if len(sweets) == 0:
         current_app.logger.info('No sweets found to satisfy query..')
-        #abort(404)
+        #  abort(404)
         response.data = json.dumps([])
 
     swts = [i.to_dict() for i in sweets]
@@ -236,3 +236,11 @@ def getCurrentUser():
     # We have the user object along with the oauth request. Just return it back
     response.data = json.dumps(request.oauth.user.to_dict())
     return response
+
+
+# Give out stats about sweets on the store, total count of sweets per
+# user, count of sweets grouped by tags
+@api.route('/stats/users', methods=['GET'])
+def get_stats():
+    stats = Sweet.queryGroupByUsername()
+    return jsonify(stats)

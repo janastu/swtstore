@@ -9,7 +9,7 @@ from swtstore.classes.models import Client, AuthorizedClients, User
 from swtstore import config
 from swtstore.classes.utils.httputils import makeCORSHeaders
 
-
+config = config.DefaultConfig()
 Oauth = Blueprint('Oauth', __name__)
 
 

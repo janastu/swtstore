@@ -13,6 +13,7 @@ from swtstore.classes.models import User, Sweet, Context, Client,\
 
 from swtstore import config
 
+config = config.DefaultConfig()
 
 user = Blueprint('user', __name__)
 

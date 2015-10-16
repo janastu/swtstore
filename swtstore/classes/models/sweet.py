@@ -11,7 +11,8 @@ from swtstore.classes.models.types import JSONType
 from swtstore.classes.utils import urlnorm  # normalize URLs
 from swtstore.classes.models import Context, User
 from swtstore.classes.exceptions import InvalidPayload, ContextDoNotExist
-
+from sqlalchemy.sql.expression import select
+from sqlalchemy import func
 
 SWTS_PER_PAGE = 100  # Move this to conf file. TODO
 
@@ -116,6 +117,14 @@ class Sweet(db.Model):
             params['what'] = Context.getByName(params['what'])
 
         return Sweet.query.filter_by(**params).all()
+
+    # query for count of sweets grouped by user
+    @staticmethod
+    def queryGroupByUsername():
+        return db.session.query(User.username,
+                                func.count(Sweet.id)).filter(
+                                    Sweet.user_id == User.id).group_by(
+                                        User.username).all()
 
     # return a dictionary of data members
     def to_dict(self):
