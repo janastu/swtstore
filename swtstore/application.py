@@ -83,69 +83,48 @@ def configure_errorhandlers(app):
 
     @app.errorhandler(404)
     def not_found(error):
-        response = make_response()
-        response.status_code = 404
-
         if request.is_xhr:
-            response.data = jsonify(error=error)
+            data = jsonify(error=error.description)
         else:
-            response.data = render_template('errors/404.html')
+            data = render_template('errors/404.html')
 
-        return response
+        return make_response(data, 404)
 
     @app.errorhandler(403)
     def forbidden(error):
-        response = make_response()
-        response.status_code = 403
-
         if request.is_xhr:
-            response.data = jsonify(error=error)
+            data = jsonify(error=error.description)
         else:
-            response.data = render_template('errors/403.html')
+            data = render_template('errors/403.html')
 
-        return response
+        return make_response(data, 403)
 
     @app.errorhandler(401)
     def unauthorized(error):
-        response = make_response()
-        response.status_code = 401
-
         if request.is_xhr:
-            response.data = jsonify(error=error)
+            data = jsonify(error=error.description)
         else:
-            response.data = render_template('errors/401.html')
+            data = render_template('errors/401.html')
 
-        return response
+        return make_response(data, 401)
 
     @app.errorhandler(400)
     def bad_request(error):
-        response = make_response()
-        response.status_code = 400
-
-        # Check if we have any custom error messages
-        # if g.error:
-        #    print 'g.error:'
-        #    print g.error
-        #    error = g.error
-
         if request.is_xhr:
-            response.data = jsonify(error=error)
+            data = jsonify(error=error.description)
         else:
-            response.data = render_template('errors/400.html', error=error)
+            data = render_template('errors/400.html', error=error)
 
-        return response
+        return make_response(data, 400)
 
     @app.errorhandler(500)
     def server_error(error):
-        response = make_response()
-        response.status_code = 500
-
         if request.is_xhr:
-            response.data = jsonify(error=error)
+            data = jsonify(error=error.description)
         else:
-            response.data = render_template('errors/500.html')
+            data = render_template('errors/500.html')
 
-        return response
+        return make_response(data, 500)
 
 
 def configure_logging(app):

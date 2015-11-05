@@ -1,5 +1,11 @@
 # HTTP utilities
+# from datetime import timedelta
+# from functools import update_wrapper
+
+from urlparse import urlparse
+
 from flask import current_app
+
 
 def makeCORSHeaders(response, host_url):
     current_app.logger.debug('makeCORSHeaders(): client\'s host_url: %s',
@@ -7,15 +13,13 @@ def makeCORSHeaders(response, host_url):
     response.headers['Access-Control-Allow-Origin'] = host_url
     response.headers['Access-Control-Max-Age'] = '3600'
     response.headers['Access-Control-Allow-Credentials'] = 'true'
-    response.headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept'
+    response.headers['Access-Control-Allow-Headers'] =\
+        'Origin, X-Requested-With, Content-Type, Accept'
 
     current_app.logger.debug('Updated headers %s', response.headers)
 
     return response
 
-from datetime import timedelta
-from flask import make_response, request, current_app
-from functools import update_wrapper
 
 """
 def crossdomain(origin=None, methods=None, headers=None, max_age=3600,
@@ -37,3 +41,10 @@ def crossdomain(origin=None, methods=None, headers=None, max_age=3600,
         options_resp = current
 
 """
+
+
+def is_url(url):
+    result = urlparse(url)
+    if not result.scheme or not result.netloc:
+        return False
+    return True

@@ -180,22 +180,23 @@ def createContext():
         elif request.data:
             payload = json.loads(request.data)
         else:
-        # if not found send back a 400
-            abort(400)
+            # if not found send back a 400
+            abort(400, 'Error in the data')
 
         current_app.logger.debug('new context payload recvd.. %s', payload)
 
         # if data is invalid send back 400
         if 'name' not in payload and 'definition' not in payload:
-            abort(400)
+            abort(400, '`name` and `definition` attributes are required')
 
+        creator = request.oauth.user
         try:
-            new_context = Context(payload['name'], payload['definition'])
-
-        except AlreadyExistsError:
-        # context with same name exists; send back 400?
-            current_app.logger.info('Context Already Exists Error')
-            abort(400)
+            new_context = Context(payload['name'], payload['definition'],
+                                  creator)
+        except (AlreadyExistsError, TypeError) as e:
+            # context with same name exists; send back 400?
+            current_app.logger.error('Error creating context: %s' % e)
+            abort(400, 'Error creating context: %s' % e)
 
         current_app.logger.debug('new context created: %s', new_context)
 
@@ -207,16 +208,16 @@ def createContext():
 
     else:
         # Get all contexts saved in the store.
-        contexts = Context.getAll()
+        contexts = [each.to_dict() for each in Context.getAll()]
         response = make_response()
         origin = request.headers.get('Origin', '*')
         response = makeCORSHeaders(response, origin)
         if len(contexts) > 0:
             response.data = json.dumps(contexts)
         else:
-            response.status_code = 204  # The server successfully processed the
-                                        # request, but is not returning any
-                                        # content.
+            # The server successfully processed the request, but is not
+            # returning any content.
+            response.status_code = 204
             response.data = json.dumps([{'reason': 'No context found.'}])
         return response
 

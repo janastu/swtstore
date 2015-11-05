@@ -28,11 +28,7 @@ def register():
     json_ld = json.loads(request.form.get('defn'))
     current_app.logger.debug('Resulting json_ld %s', json_ld)
 
-    new_context = Context(
-        name=request.form.get('name'),
-        definition=json_ld,
-        user_id=current_user.id
-    )
+    new_context = Context(request.form.get('name'), json_ld, current_user)
     current_app.logger.debug('New Context created: %s', new_context)
     new_context.persist()
 
