@@ -9,4 +9,4 @@ sys.path.insert(0, BASE_DIR)
 from swtstore import create_app
 from swtstore import config
 
-application = create_app(config)
+application = create_app(config.DefaultConfig())
